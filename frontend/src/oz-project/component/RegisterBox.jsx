@@ -41,10 +41,10 @@ function RegisterBox({
                 <Item className="restaurant_category">
                     카테고리 : {res_category}
                 </Item>
-                <Item className="restaurant_runTime">
+                {/* <Item className="restaurant_runTime">
                     영업 시간 : {res_runtime}
-                </Item>
-                <Item className="restaurant_goToNaver">4 : {res_link}</Item>
+                </Item> */}
+                <Item className="restaurant_goToNaver"> : {res_link}</Item>
                 <Item className="restaurant_img">
                     <img
                         style={{ width: '200px', height: '200px' }}
