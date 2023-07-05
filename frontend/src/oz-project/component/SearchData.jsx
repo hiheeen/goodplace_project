@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Axios } from 'axios';
+import axios from 'axios';
 import { Cookies } from 'react-cookie';
 import styled from 'styled-components';
 import RegisterBox from './RegisterBox';
@@ -19,6 +19,8 @@ function SearchData({ display }) {
         place: '',
     });
 
+    const [datas, setDatas] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
     const handleChange = (e) => {
         setValue({
             ...value,
@@ -26,72 +28,84 @@ function SearchData({ display }) {
         });
     };
 
-    const handleSubmit = async () => {
-        // e.preventDefault();
+    const fetchData = async () => {
         if (value.place === '') return;
         alert(JSON.stringify(value, null, 1));
 
         const formData = new FormData();
-        formData.append('place', value);
+        formData.append('place', value.place);
 
         const cookies = new Cookies();
 
-        const setCookie = (name, value, option) => {
-            return cookies.set(name, value, { ...option });
-        };
+        // const setCookie = (name, value, option) => {
+        //     return cookies.set(name, value, { ...option });
+        // };
         const getCookie = (name) => {
             return cookies.get(name);
         };
         // const csrftoken = getCookie('csrftoken');
-        const response = await Axios({
+        const response = await axios({
             method: 'post',
-            url: 'http://localhost:8000/api/v1/places/search_place',
+            url: 'http://localhost:8000/api/v1/places/search_place/',
             data: formData,
             headers: { authorization: `Bearer ${getCookie('place')}` },
         })
-            .then((result) => {
-                console.log('요청성공');
-                console.log(result);
+            // .then((result) => {
+            //     console.log('요청성공');
+            //     console.log('result', result);
+            // })
+            .then((response) => {
+                console.log('response.data', response.data);
+                setDatas(response.data);
+                console.log(datas);
+                setIsLoading(false);
+                // const accessToken = response.data.token;
+                // setCookie('place', accessToken);
             })
             .catch((error) => {
                 console.log('요청실패');
                 console.log(error);
             });
-        const accessToken = response.data.token;
-        setCookie('place', `${accessToken}`);
     };
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        fetchData();
+    };
+
+    useEffect(() => {
+        fetchData();
+    }, []);
+
     // csrftoken을 header에 넣어야 한다는데 아무리 해도 장고에 토큰 전달이 안!!!!됨!!!!!!1
 
-    const [isLoading, setIsLoading] = useState(true);
-    const [datas, setDatas] = useState([]);
-    const getDatas = async () => {
-        const response = await fetch(
-            'http://localhost:8000/api/v1/places/search_place'
-        );
-        const json = await response.json();
+    // const getDatas = async () => {
+    //     const response = await fetch(
+    //         'http://localhost:8000/api/v1/places/search_place'
+    //     );
+    //     const json = await response.json();
 
-        setDatas(json.data.movies);
-        setIsLoading(false);
-    };
-    useEffect(() => {
-        getDatas();
-    }, []);
-    console.log(datas);
+    //     setDatas(json.data.datas);
+    //     setIsLoading(false);
+    // };
+
+    // console.log('datas', datas); // 비동기니까 이 시점엔 데이터가 없다. 이유 정확하게 알기
+
     return (
         <div>
             <div style={{ display: display, justifyContent: 'center' }}>
                 <div>
                     <form
-                        action="http://localhost:8000/api/v1/places/search_place"
                         method="post"
-                        onSubmit={handleSubmit}
                         style={{
                             width: '400px',
                             display: 'flex',
                             justifyContent: 'center',
                             alignItems: 'center',
                             position: 'relative',
+                            backgroundColor: 'black',
+                            height: '400px',
                         }}
+                        onSubmit={handleSubmit}
                     >
                         <CSRFToken />
                         <div
@@ -126,20 +140,18 @@ function SearchData({ display }) {
                     </form> */}
                 </div>
             </div>
-            {isLoading ? (
-                <h1>Loading...</h1>
-            ) : (
-                <div>
-                    {datas.map((data) => (
-                        <RegisterBox
-                            key={data.id}
-                            res_img={data.image.items.link}
-                            res_name={data.place.items.title}
-                            res_category={data.place.items.category}
-                        />
-                    ))}
-                </div>
-            )}
+
+            <div>
+                {isLoading ? null : Object.keys(datas).length ? (
+                    <RegisterBox
+                        res_name={datas.place.items[0].title}
+                        res_img={datas.image.items[0].link}
+                        res_category={datas.place.items[0].category}
+                    />
+                ) : (
+                    <h1>loading...</h1>
+                )}
+            </div>
         </div>
     );
 }

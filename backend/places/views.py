@@ -52,7 +52,8 @@ class SearchPlace(APIView):
         place_image_url = 'https://openapi.naver.com/v1/search/image?query='
         image_url = place_image_url + kw + '$&display=1'
         image_result = requests.get(image_url,headers = headers).json() 
-        return Response({'place':place_result,"image":image_result})
+        
+        return Response({'place':place_result,"image":image_result,})
         
 class ModifyPlace(APIView):
     def put(self,request,place_id):

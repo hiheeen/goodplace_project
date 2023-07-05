@@ -37,12 +37,20 @@ function RegisterBox({
         >
             <div>
                 {/* <SearchData display="flex" /> */}
-                <Item className="restaurant_name">1 : {res_name}</Item>
-                <Item className="restaurant_category">2 : {res_category}</Item>
-                <Item className="restaurant_runTime">3 : {res_runtime}</Item>
+                <Item className="restaurant_name">식당 이름 : {res_name}</Item>
+                <Item className="restaurant_category">
+                    카테고리 : {res_category}
+                </Item>
+                <Item className="restaurant_runTime">
+                    영업 시간 : {res_runtime}
+                </Item>
                 <Item className="restaurant_goToNaver">4 : {res_link}</Item>
                 <Item className="restaurant_img">
-                    <img alt="" src={res_img} />
+                    <img
+                        style={{ width: '200px', height: '200px' }}
+                        alt=""
+                        src={res_img}
+                    />
                 </Item>
             </div>
         </div>
