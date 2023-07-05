@@ -45,14 +45,21 @@ class SearchPlace(APIView):
         headers = {'X-Naver-Client-Id':client_id,'X-Naver-Client-Secret':client_secret}
 
         place_search_url = 'https://openapi.naver.com/v1/search/local.json?query='
-        kw = request.data['place']    
+        kw = request.data['place'] + '신사점'    
         place_url = place_search_url + kw + '$&display=1'
         place_result = requests.get(place_url,headers = headers).json()
+
+        place_result_none_b = place_result['items'][0]['title'].replace('<b>', '')
+        
+        place_result_none_b = place_result_none_b.replace('</b>', '')
+
+        place_result['items'][0]['title'] = place_result_none_b
 
         place_image_url = 'https://openapi.naver.com/v1/search/image?query='
         image_url = place_image_url + kw + '$&display=1'
         image_result = requests.get(image_url,headers = headers).json() 
         return Response({'place':place_result,"image":image_result})
+        # return Response(place_result_none_b)
         
 class ModifyPlace(APIView):
     def put(self,request,place_id):
