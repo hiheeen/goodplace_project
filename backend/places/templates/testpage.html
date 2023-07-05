@@ -53,6 +53,14 @@
         <p>{{place.link}}</p>
         <p>{{place.description}}</p>
         <p>{{place.user.username}}</p>
+        <form action="{% url 'likes' place.id %}" method="post">
+            {% csrf_token %}
+            <input type="submit" value="좋아요">
+        </form>
+        <form action="{% url 'hates' place.id %}" method="post">
+            {% csrf_token %}
+            <input type="submit" value="싫어요">
+        </form>
     </li>
     {%endfor%}
     </ul>
