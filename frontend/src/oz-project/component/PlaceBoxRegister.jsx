@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import styled from 'styled-components';
 const Container = styled.div`
     box-sizing: border-box;
@@ -12,7 +13,8 @@ function PlaceBoxRegister({
     res_category,
     res_link,
     res_img,
-
+    displayButton,
+    handleClick,
     placeLink,
 }) {
     return (
@@ -95,12 +97,12 @@ function PlaceBoxRegister({
                     </span>
                     <span
                         style={{
-                            display: 'inline-block',
+                            display: displayButton,
                             color: 'rgb(69, 69, 69)',
                             fontSize: '14px',
                         }}
                     >
-                        <button>등록하기</button>
+                        <button onClick={handleClick}>등록하기</button>
                     </span>
                 </div>
             </div>
