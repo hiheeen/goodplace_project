@@ -7,6 +7,7 @@ from .serializers import PlaceSerializer
 from django.shortcuts import render,redirect
 # from urllib.parse import quote
 import requests
+from . import keys
 
 
 class TestPage(APIView):
@@ -43,8 +44,8 @@ class CreatePlace(APIView):
     
 class SearchPlace(APIView):
     def post(sel,request):
-        client_id = 'F1xqiIHmXrSUT6TFuntC'
-        client_secret = '0tA26WL4FW'
+        client_id = keys.client_id
+        client_secret = keys.client_secret
         headers = {'X-Naver-Client-Id':client_id,'X-Naver-Client-Secret':client_secret}
         try:
             kw = request.data['place'] + '신사'    
