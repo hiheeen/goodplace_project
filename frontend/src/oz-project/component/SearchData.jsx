@@ -28,7 +28,7 @@ function SearchData({ display }) {
     });
 
     const [datas, setDatas] = useState([]);
-    const [list, setList] = useState([]);
+    // const [list, setList] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     // const [resName, setResName] = useState(`${value.place}`);
     const [displayButton, setDisplayButton] = useState('inline-block');
@@ -52,7 +52,6 @@ function SearchData({ display }) {
 
     const fetchData = async () => {
         if (value.place === '') return;
-        // alert(JSON.stringify(value, null, 1));
 
         const formData = new FormData();
         formData.append('place', value.place);
@@ -72,10 +71,6 @@ function SearchData({ display }) {
             data: formData,
             headers: { authorization: `Bearer ${getCookie('place')}` },
         })
-            // .then((result) => {
-            //     console.log('요청성공');
-            //     console.log('result', result);
-            // })
             .then((response) => {
                 console.log('response.data', response.data);
                 setDatas(response.data);
@@ -99,40 +94,43 @@ function SearchData({ display }) {
     }, []);
 
     // csrftoken을 header에 넣어야 한다는데 아무리 해도 장고에 토큰 전달이 안!!!!됨!!!!!!1
-    async function getDatas() {
+    const getDatas = async () => {
         const response = await fetch('http://localhost:8000/api/v1/places/');
         const json = await response.json();
 
-        setList(json);
+        setDatas(json);
         // setIsLoading(false);
         // console.log(json[0]?.title);
-    }
-
+    };
     const handleRegister = (e) => {
         e.preventDefault();
-        (async () => {
-            const response = await fetch(
-                'http://localhost:8000/api/v1/places/'
-            );
-            const json = await response.json();
-
-            setList(json);
-            // setIsLoading(false);
-            // console.log(json[0]?.title);
-        })();
+        getDatas();
     };
-    useEffect(() => {
-        (async () => {
-            const response = await fetch(
-                'http://localhost:8000/api/v1/places/'
-            );
-            const json = await response.json();
+    // const handleRegister = (e) => {
+    //     e.preventDefault();
+    //     (async () => {
+    //         const response = await fetch(
+    //             'http://localhost:8000/api/v1/places/'
+    //         );
+    //         const json = await response.json();
 
-            setList(json);
-            // setIsLoading(false);
-            // console.log(json[0]?.title);
-        })();
-    }, []);
+    //         setList(json);
+    //         // setIsLoading(false);
+    //         // console.log(json[0]?.title);
+    //     })();
+    // };
+    // useEffect(() => {
+    //     (async () => {
+    //         const response = await fetch(
+    //             'http://localhost:8000/api/v1/places/'
+    //         );
+    //         const json = await response.json();
+
+    //         setList(json);
+    //         // setIsLoading(false);
+    //         // console.log(json[0]?.title);
+    //     })();
+    // }, []);
 
     // console.log('datas', datas); // 비동기니까 이 시점엔 데이터가 없다. 이유 정확하게 알기
 

@@ -6,8 +6,12 @@ import reportWebVitals from './reportWebVitals';
 import RegisterBox from './oz-project/component/RegisterBox';
 import SearchData from './oz-project/component/SearchData';
 // import { CorsOptions } from 'cors';
-// const app =
-// const cors = require("cors");
+
+// const express = require('express');
+
+// const cors = require('cors');
+// const app = express();
+// app.use(cors());
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
