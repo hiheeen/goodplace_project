@@ -2,15 +2,16 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Cookies } from 'react-cookie';
 import styled from 'styled-components';
-import RegisterBox from './RegisterBox';
+// import RegisterBox from './RegisterBox';
 import CSRFToken from '../etc/CSRFToken';
+import PlaceBoxRegister from './PlaceBoxRegister';
 
 const Button = styled.div`
     all: unset;
-    border: 1px solid white;
+    border: 1px solid black;
     border-radius: 10px;
     padding: 5px;
-    color: white;
+    color: black;
     font-size: 13px;
 `;
 
@@ -30,7 +31,7 @@ function SearchData({ display }) {
 
     const fetchData = async () => {
         if (value.place === '') return;
-        alert(JSON.stringify(value, null, 1));
+        // alert(JSON.stringify(value, null, 1));
 
         const formData = new FormData();
         formData.append('place', value.place);
@@ -92,58 +93,95 @@ function SearchData({ display }) {
 
     return (
         <div>
-            <div style={{ display: display, justifyContent: 'center' }}>
-                <div>
-                    <form
-                        method="post"
+            <div
+                className="container"
+                style={{
+                    display: display,
+                    justifyContent: 'center',
+                    position: 'absolute',
+                    top: 0,
+                    bottom: 0,
+                    left: 0,
+                }}
+            >
+                <form
+                    method="post"
+                    style={{
+                        width: '320px',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        position: 'relative',
+                        backgroundColor: 'white',
+                        height: '50px',
+                    }}
+                    onSubmit={handleSubmit}
+                >
+                    <CSRFToken />
+                    <div
                         style={{
-                            width: '400px',
+                            position: 'absolute',
+                            width: '290px',
                             display: 'flex',
                             justifyContent: 'center',
-                            alignItems: 'center',
-                            position: 'relative',
-                            backgroundColor: 'black',
-                            height: '400px',
                         }}
-                        onSubmit={handleSubmit}
                     >
-                        <CSRFToken />
-                        <div
+                        <input
                             style={{
-                                position: 'absolute',
+                                borderRadius: '5px',
+                                border: '1px solid black',
+                                height: '20px',
                                 width: '100%',
-                                display: 'flex',
-                                justifyContent: 'center',
+                                maxWidth: '240px',
+                                marginRight: 5,
+                                top: 10,
                             }}
-                        >
-                            <input
-                                style={{
-                                    borderRadius: '5px',
-                                    border: '1px solid white',
-                                    height: '20px',
-                                    width: '100%',
-                                    maxWidth: '250px',
-                                    marginRight: 5,
-                                    top: 10,
-                                }}
-                                name="place"
-                                onChange={handleChange}
-                                value={value.place}
-                                type="text"
-                            ></input>
-                            <Button type="submit">검색</Button>
-                        </div>
-                    </form>
-                    {/* 
+                            name="place"
+                            onChange={handleChange}
+                            value={value.place}
+                            type="text"
+                        ></input>
+                        <Button type="submit">검색</Button>
+                    </div>
+                </form>
+                {/* 
                     <form>
                         <div></div>
                     </form> */}
+                <div>
+                    {isLoading ? (
+                        <h1>loading...</h1>
+                    ) : Object.keys(datas).length ? (
+                        <PlaceBoxRegister
+                            brandRunTime="24시간"
+                            likeNum="6"
+                            disLikeNum="2"
+                            placeLink=""
+                            res_name={datas.place.items[0].title}
+                            res_img={datas.image.items[0].link}
+                            res_category={datas.place.items[0].category}
+                            res_link={
+                                'https://map.naver.com/v5/search/' + value.place
+                            }
+                        />
+                    ) : (
+                        <h1>loading...</h1>
+                    )}
+                </div>
+                <div>
+                    <form></form>
                 </div>
             </div>
 
-            <div>
-                {isLoading ? null : Object.keys(datas).length ? (
-                    <RegisterBox
+            {/* <div>
+                {isLoading ? (
+                    <h1>loading...</h1>
+                ) : Object.keys(datas).length ? (
+                    <PlaceBoxRegister
+                        brandRunTime="24시간"
+                        likeNum="6"
+                        disLikeNum="2"
+                        placeLink=""
                         res_name={datas.place.items[0].title}
                         res_img={datas.image.items[0].link}
                         res_category={datas.place.items[0].category}
@@ -151,7 +189,7 @@ function SearchData({ display }) {
                 ) : (
                     <h1>loading...</h1>
                 )}
-            </div>
+            </div> */}
         </div>
     );
 }

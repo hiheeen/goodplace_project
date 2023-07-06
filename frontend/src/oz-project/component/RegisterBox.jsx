@@ -33,6 +33,9 @@ function RegisterBox({
                 border: '1px solid black',
                 backgroundColor: 'black',
                 paddingTop: 100,
+                width: '100%',
+                position: 'absolute',
+                borderTop: '1px solid lightgrey',
             }}
         >
             <div>

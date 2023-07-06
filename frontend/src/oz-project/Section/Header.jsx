@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import SearchData from '../component/SearchData';
+import { useNavigate } from 'react-router-dom';
 const Container = styled.div`
     position: fixed;
     z-index: 1000;
@@ -58,7 +58,8 @@ const SignUp = styled.button`
     font-weight: 800;
     margin-left: 8px;
 `;
-function Header({ registerDisplay, centerDisplay }) {
+
+function Header({ centerDisplay, handleClick }) {
     return (
         <div>
             <Container>
@@ -84,12 +85,15 @@ function Header({ registerDisplay, centerDisplay }) {
                         className="header_center"
                     >
                         <div className="header_register">
-                            <Register className="register_btn">
+                            <Register
+                                className="register_btn"
+                                onClick={handleClick}
+                            >
                                 맛집 등록하기
                             </Register>
                         </div>
                     </Center>
-                    <SearchData display={registerDisplay} />
+
                     <Right className="header_right">
                         <LogIn className="oz_logIn">로그인</LogIn>
                         <div style={{ color: 'white' }}>|</div>
