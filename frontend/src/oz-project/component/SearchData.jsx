@@ -28,6 +28,7 @@ function SearchData({ display }) {
     });
 
     const [datas, setDatas] = useState([]);
+    const [list, setList] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     // const [resName, setResName] = useState(`${value.place}`);
     const [displayButton, setDisplayButton] = useState('inline-block');
@@ -98,16 +99,40 @@ function SearchData({ display }) {
     }, []);
 
     // csrftoken을 header에 넣어야 한다는데 아무리 해도 장고에 토큰 전달이 안!!!!됨!!!!!!1
+    async function getDatas() {
+        const response = await fetch('http://localhost:8000/api/v1/places/');
+        const json = await response.json();
 
-    // const getDatas = async () => {
-    //     const response = await fetch(
-    //         'http://localhost:8000/api/v1/places/search_place'
-    //     );
-    //     const json = await response.json();
+        setList(json);
+        // setIsLoading(false);
+        // console.log(json[0]?.title);
+    }
 
-    //     setDatas(json.data.datas);
-    //     setIsLoading(false);
-    // };
+    const handleRegister = (e) => {
+        e.preventDefault();
+        (async () => {
+            const response = await fetch(
+                'http://localhost:8000/api/v1/places/'
+            );
+            const json = await response.json();
+
+            setList(json);
+            // setIsLoading(false);
+            // console.log(json[0]?.title);
+        })();
+    };
+    useEffect(() => {
+        (async () => {
+            const response = await fetch(
+                'http://localhost:8000/api/v1/places/'
+            );
+            const json = await response.json();
+
+            setList(json);
+            // setIsLoading(false);
+            // console.log(json[0]?.title);
+        })();
+    }, []);
 
     // console.log('datas', datas); // 비동기니까 이 시점엔 데이터가 없다. 이유 정확하게 알기
 
@@ -192,7 +217,13 @@ function SearchData({ display }) {
                             value={value.place}
                             type="text"
                         ></Input>
-                        <Button type="submit">검색</Button>
+                        <Button
+                            type="submit"
+                            onClick={handleSubmit}
+                            style={{ pointer: 'cursor' }}
+                        >
+                            검색
+                        </Button>
                     </div>
                 </form>
                 <div>
@@ -223,8 +254,7 @@ function SearchData({ display }) {
                     <form
                         method="post"
                         action={createApi}
-                        // onSubmit={handleRegister}
-
+                        onSubmit={handleRegister}
                         style={{
                             display: 'flex',
                             justifyContent: 'center',
@@ -241,8 +271,8 @@ function SearchData({ display }) {
                                 <Input
                                     type="text"
                                     name="title"
-                                    defaultValue={datas.place.items[0].title}
-                                    disabled="true"
+                                    value={datas.place.items[0].title}
+                                    hidden
                                     // onChange={handleNameChange}
                                     style={{
                                         width: '290px',
