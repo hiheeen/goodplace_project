@@ -94,33 +94,41 @@ function SearchData({ display }) {
     }, []);
 
     // csrftoken을 header에 넣어야 한다는데 아무리 해도 장고에 토큰 전달이 안!!!!됨!!!!!!1
-    const getDatas = async () => {
-        const response = await fetch('http://localhost:8000/api/v1/places/');
-        const json = await response.json();
+    // const getDatas = async () => {
+    //     const response = await fetch('http://localhost:8000/api/v1/places/');
+    //     const json = await response.json();
 
-        setDatas(json);
-        // setIsLoading(false);
-        // console.log(json[0]?.title);
-    };
+    //     setDatas(json);
+    //     setIsLoading(false);
+    //     console.log(json[0]?.title);
+    // };
     const handleRegister = (e) => {
         e.preventDefault();
-        getDatas();
+        const place = {
+            title: e.target.title.value,
+            category: e.target.category.value,
+            link: e.target.link.value,
+            img: e.target.img.value,
+        };
+        console.log(place);
+        const places = axios.postForm(
+            'http://localhost:8000/api/v1/places/create_place/',
+            place
+        );
     };
-    // const handleRegister = (e) => {
+    // const handleRegister = async (e) => {
     //     e.preventDefault();
-    //     (async () => {
-    //         const response = await fetch(
-    //             'http://localhost:8000/api/v1/places/'
-    //         );
-    //         const json = await response.json();
 
-    //         setList(json);
-    //         // setIsLoading(false);
-    //         // console.log(json[0]?.title);
-    //     })();
+    //     const response = await fetch('http://localhost:8000/api/v1/places/');
+    //     const json = await response.json();
+
+    //     setList(json);
+    //     // setIsLoading(false);
+    //     console.log(json[0]?.title);
     // };
+
     // useEffect(() => {
-    //     (async () => {
+    //     async function fetchData() {
     //         const response = await fetch(
     //             'http://localhost:8000/api/v1/places/'
     //         );
@@ -129,8 +137,10 @@ function SearchData({ display }) {
     //         setList(json);
     //         // setIsLoading(false);
     //         // console.log(json[0]?.title);
-    //     })();
-    // }, []);
+    //     }
+
+    //     fetchData();
+    // }, []); //// 데이터 받아오는 코드 .. 보내는거랑 받아오는거 구별 잘하기
 
     // console.log('datas', datas); // 비동기니까 이 시점엔 데이터가 없다. 이유 정확하게 알기
 
@@ -321,7 +331,7 @@ function SearchData({ display }) {
                                         marginTop: '10px',
                                     }}
                                 >
-                                    <button onClick="">등록</button>
+                                    <button>등록</button>
                                 </div>
                             </div>
                         )}
