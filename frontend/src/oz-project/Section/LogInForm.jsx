@@ -71,7 +71,7 @@ function LogInForm(props) {
         localStorage.setItem('refresh_token', data.refresh);
         axios.defaults.headers.common[
             'Authorization'
-        ] = `Bearer ${data['access']}`;
+        ] = `Bearer ${data['access']}`; // 설명을 다시 듣던지.. 공부를 하던지... 봐도 모르겠다
         // window.location.href = '/';
         navigate('/', { replace: true });
     };

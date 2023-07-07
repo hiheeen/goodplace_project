@@ -1,8 +1,8 @@
 import styled from 'styled-components';
-import PlaceImg01 from '../img/감자탕.png';
-import PlaceImg02 from '../img/라멘.png';
-import PlaceImg03 from '../img/미락카츠.png';
-import PlaceImg04 from '../img/망향비빔.png';
+// import PlaceImg01 from '../img/감자탕.png';
+// import PlaceImg02 from '../img/라멘.png';
+// import PlaceImg03 from '../img/미락카츠.png';
+// import PlaceImg04 from '../img/망향비빔.png';
 import PlaceBox from '../component/PlaceBox';
 import Header from './Header';
 import { useNavigate } from 'react-router-dom';
@@ -103,7 +103,9 @@ function MainSection(props) {
     const [list, setList] = useState([]);
     const navigate = useNavigate();
     const handleClick = () => {
-        navigate('/create_place', { replace: true }); // true일 경우 뒤로가기 안 됨....이어야 하는데
+        localStorage.getItem('access_token') === null
+            ? alert('로그인 후 이용해주세요')
+            : navigate('/create_place', { replace: true }); // true일 경우 뒤로가기 안 됨....이어야 하는데
         //홈에 있는 header에서 create_place로 이동 후 뒤로가기 한번엔 똑같은 create_place페이지,, 두 번 누르면
         //전에 남아있는 기록 창으로 간다. 왜???
     };

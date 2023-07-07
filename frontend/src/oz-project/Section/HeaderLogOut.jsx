@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 const Container = styled.div`
     position: fixed;
     z-index: 1000;
@@ -48,23 +49,32 @@ const LogOut = styled.button`
     font-weight: 800;
     margin-right: 8px;
 `;
-const SignUp = styled.button`
-    all: unset;
-    border: 1px solid white;
-    border-radius: 10px;
-    font-size: 1px;
-    padding: 4px;
-    color: white;
-    font-weight: 800;
-    margin-left: 8px;
-`;
+// const SignUp = styled.button`
+//     all: unset;
+//     border: 1px solid white;
+//     border-radius: 10px;
+//     font-size: 1px;
+//     padding: 4px;
+//     color: white;
+//     font-weight: 800;
+//     margin-left: 8px;
+// `;
 
 function HeaderLogOut({ centerDisplay, handleClick }) {
     const navigate = useNavigate();
-    const handleLogOut = () => {
-        navigate('/', { replace: true });
-    };
+    const handleLogOut = async () => {
+        const token = {
+            refresh_token: localStorage.getItem('refresh_token'),
+        };
+        const logOut = await axios.post(
+            'http://localhost:8000/api/v1/users/logout/',
+            token
+        );
 
+        navigate('/', { replace: true });
+        localStorage.clear();
+        // setIsLogOut(true);
+    };
     return (
         <div>
             <Container>

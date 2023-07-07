@@ -101,13 +101,13 @@ function SignUpForm(props) {
                                 {...register('userId', {
                                     required: '아이디는 필수 입력입니다.',
                                     minLength: {
-                                        value: 8,
+                                        value: 6,
                                         message:
-                                            '아이디는 8글자 이상이어야 합니다',
+                                            '아이디는 6글자 이상이어야 합니다',
                                     },
                                     pattern: {
                                         // input의 정규식 패턴
-                                        value: /^[A-za-z0-9가-힣]{3,10}$/,
+                                        value: /^[A-za-z0-9가-힣]{6,15}$/,
                                         message:
                                             '가능한 문자: 영문 대소문자, 글자 단위 한글, 숫자', // 에러 메세지
                                     },

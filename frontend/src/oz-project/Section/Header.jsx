@@ -1,5 +1,7 @@
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+// import { useState } from 'react';
+import axios from 'axios';
 const Container = styled.div`
     position: fixed;
     z-index: 1000;
@@ -58,14 +60,42 @@ const SignUp = styled.button`
     font-weight: 800;
     margin-left: 8px;
 `;
-
+const LogOut = styled.button`
+    all: unset;
+    border: 1px solid white;
+    border-radius: 10px;
+    font-size: 11px;
+    padding: 4px;
+    color: white;
+    font-weight: 800;
+    margin-right: 8px;
+`;
 function Header({ centerDisplay, handleClick }) {
+    // const [isLogOut, setIsLogOut] = useState(false);
     const navigate = useNavigate();
     const handleSignUp = () => {
         navigate('/signUp', { replace: true });
     };
     const handleLogIn = () => {
         navigate('/logIn', { replace: true });
+    };
+    // const refresh_token = localStorage.getItem('refresh_token');
+    // const logOut =await axios.post('http://localhost:8000/api/v1/users/logout/',
+    // refresh_token )
+
+    // }
+    const handleLogOut = async () => {
+        const token = {
+            refresh_token: localStorage.getItem('refresh_token'),
+        };
+        const logOut = await axios.post(
+            'http://localhost:8000/api/v1/users/logout/',
+            token
+        );
+
+        navigate('/', { replace: true });
+        localStorage.clear();
+        // setIsLogOut(true);
     };
     return (
         <div>
@@ -100,16 +130,26 @@ function Header({ centerDisplay, handleClick }) {
                             </Register>
                         </div>
                     </Center>
-
-                    <Right className="header_right">
-                        <LogIn onClick={handleLogIn} className="oz_logIn">
-                            로그인
-                        </LogIn>
-                        <div style={{ color: 'white' }}>|</div>
-                        <SignUp onClick={handleSignUp} className="oz_signUp">
-                            회원가입
-                        </SignUp>
-                    </Right>
+                    {localStorage.getItem('access_token') === null ? (
+                        <Right className="header_right">
+                            <LogIn onClick={handleLogIn} className="oz_logIn">
+                                로그인
+                            </LogIn>
+                            <div style={{ color: 'white' }}>|</div>
+                            <SignUp
+                                onClick={handleSignUp}
+                                className="oz_signUp"
+                            >
+                                회원가입
+                            </SignUp>
+                        </Right>
+                    ) : (
+                        <Right className="header_right">
+                            <LogOut onClick={handleLogOut} className="oz_logIn">
+                                로그아웃
+                            </LogOut>
+                        </Right>
+                    )}
                 </Wrapper>
             </Container>
         </div>
