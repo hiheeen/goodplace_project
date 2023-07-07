@@ -4,6 +4,7 @@ import Header from './Header';
 import { Reset } from 'styled-reset';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+
 const Form = styled.form`
     width: 400px;
     height: 200px;
@@ -25,9 +26,7 @@ const FormWrapper = styled.div`
     display: flex;
     flex-direction: column;
 `;
-const Button = styled.div`
-    display: inline-block;
-`;
+
 const PTag = styled.div`
     font-size: 5px;
     color: red;
@@ -43,17 +42,40 @@ function LogInForm(props) {
     const {
         register,
         watch,
+
         handleSubmit,
         formState: { errors },
     } = useForm();
     const navigate = useNavigate();
-    const onSubmit = async (data) => {
-        const signUp = axios.post(
-            'http://localhost:8000/api/v1/users/create_user/',
-            data
+
+    // Create the submit method.
+    const onSubmit = async () => {
+        const userId = watch('userId');
+        const password = watch('password');
+        const user = {
+            userId: userId,
+            password: password,
+        };
+
+        // Create the POST request
+        const { data } = await axios.post(
+            'http://localhost:8000/api/v1/users/login/',
+            user,
+            { headers: { 'Content-Type': 'application/json' } },
+            { withCredentials: true }
         );
+        console.log(user);
+        // Initialize the access & refresh token in localstorage.
+        localStorage.clear();
+        localStorage.setItem('access_token', data.access);
+        localStorage.setItem('refresh_token', data.refresh);
+        axios.defaults.headers.common[
+            'Authorization'
+        ] = `Bearer ${data['access']}`;
+        // window.location.href = '/';
         navigate('/', { replace: true });
     };
+
     return (
         <div>
             <Header />

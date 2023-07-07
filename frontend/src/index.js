@@ -3,8 +3,9 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import RegisterBox from './oz-project/component/RegisterBox';
-import SearchData from './oz-project/component/SearchData';
+// import RegisterBox from './oz-project/component/RegisterBox';
+// import SearchData from './oz-project/component/SearchData';
+
 // import { CorsOptions } from 'cors';
 
 // const express = require('express');
