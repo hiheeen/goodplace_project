@@ -5,6 +5,7 @@ import styled from 'styled-components';
 // import RegisterBox from './RegisterBox';
 import CSRFToken from '../etc/CSRFToken';
 import PlaceBoxRegister from './PlaceBoxRegister';
+import { useNavigate } from 'react-router-dom';
 
 const Button = styled.div`
     all: unset;
@@ -102,20 +103,24 @@ function SearchData({ display }) {
     //     setIsLoading(false);
     //     console.log(json[0]?.title);
     // };
+    const navigate = useNavigate();
+
     const handleRegister = (e) => {
         e.preventDefault();
+        console.log(e.target);
         const place = {
             title: e.target.title.value,
             category: e.target.category.value,
             link: e.target.link.value,
-            img: e.target.img.value,
+            image: e.target.image.value,
         };
         console.log(place);
         const places = axios.postForm(
             'http://localhost:8000/api/v1/places/create_place/',
             place
         );
-    };
+        navigate('/', { replace: true });
+    }; ///// 작동 되는 부분
     // const handleRegister = async (e) => {
     //     e.preventDefault();
 
@@ -153,9 +158,8 @@ function SearchData({ display }) {
     //         'link',
     //         'https://map.naver.com/v5/search/' + value.place
     //     );
-    //     formData.append('img', datas.image.items[0].link);
+    //     formData.append('image', datas.image.items[0].link);
     //     formData.append('description', value.description);
-    //     formData.append('time', '2');
     //     fetch('http://localhost:8000/api/v1/places/create_place/', {
     //         method: 'POST',
     //         cache: 'no-cache',
@@ -312,7 +316,7 @@ function SearchData({ display }) {
                                 ></input>
                                 <input
                                     type="text"
-                                    name="img"
+                                    name="image"
                                     value={datas.image.items[0].link}
                                 />
                                 <input

@@ -38,7 +38,7 @@ const Register = styled.button`
     color: white;
     font-weight: 800;
 `;
-const LogIn = styled.button`
+const LogOut = styled.button`
     all: unset;
     border: 1px solid white;
     border-radius: 10px;
@@ -59,14 +59,12 @@ const SignUp = styled.button`
     margin-left: 8px;
 `;
 
-function Header({ centerDisplay, handleClick }) {
+function HeaderLogOut({ centerDisplay, handleClick }) {
     const navigate = useNavigate();
-    const handleSignUp = () => {
-        navigate('/signUp', { replace: true });
+    const handleLogOut = () => {
+        navigate('/', { replace: true });
     };
-    const handleLogIn = () => {
-        navigate('/logIn', { replace: true });
-    };
+
     return (
         <div>
             <Container>
@@ -102,17 +100,17 @@ function Header({ centerDisplay, handleClick }) {
                     </Center>
 
                     <Right className="header_right">
-                        <LogIn onClick={handleLogIn} className="oz_logIn">
-                            로그인
-                        </LogIn>
-                        <div style={{ color: 'white' }}>|</div>
+                        <LogOut onClick={handleLogOut} className="oz_logIn">
+                            로그아웃
+                        </LogOut>
+                        {/* <div style={{ color: 'white' }}>|</div>
                         <SignUp onClick={handleSignUp} className="oz_signUp">
                             회원가입
-                        </SignUp>
+                        </SignUp> */}
                     </Right>
                 </Wrapper>
             </Container>
         </div>
     );
 }
-export default Header;
+export default HeaderLogOut;

@@ -8,6 +8,7 @@ import Header from './Header';
 // import PlaceBoxRegister from '../component/PlaceBoxRegister';
 import Map from '../component/Map';
 import SearchData from '../component/SearchData';
+import HeaderLogOut from './HeaderLogOut';
 
 const Wrapper = styled.div`
     position: relative;
@@ -70,7 +71,7 @@ function RegisterSection(props) {
 
     return (
         <div>
-            <Header registerDisplay="flex" centerDisplay="none" />
+            <HeaderLogOut registerDisplay="flex" centerDisplay="none" />
             <Container>
                 <Map />
                 <Wrapper
