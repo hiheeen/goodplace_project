@@ -28,6 +28,8 @@ function PlaceBox({
     imgHeight,
     placeBoxHeight,
     placeBoxMinWidth,
+    likeClick,
+    disLikeClick,
 }) {
     return (
         <Container
@@ -93,8 +95,14 @@ function PlaceBox({
                         marginBottom: 10,
                     }}
                 >
-                    지도로 이동 =&gt;
-                    <a href={placeLink}></a>
+                    <a
+                        href={placeLink}
+                        target="_blank"
+                        rel="noreferrer"
+                        style={{ textDecoration: 'none' }}
+                    >
+                        지도로 이동 =&gt;
+                    </a>
                 </div>
                 <div
                     style={{
@@ -104,31 +112,37 @@ function PlaceBox({
                         display: 'flex',
                     }}
                 >
-                    <div
+                    <button
                         style={{
+                            all: 'unset',
                             marginRight: 15,
                             border: '1px solid rgb(69, 69, 69)',
                             padding: '1px 10px',
                             display: 'flex',
                             flexDirection: 'space-between',
                             borderRadius: 10,
+                            zIndex: 999,
                         }}
+                        onClick={likeClick}
                     >
                         <span style={{ marginRight: 5 }}>좋아요</span>
                         <span style={{ color: 'blue' }}> {likeNum} </span>
-                    </div>
-                    <div
+                    </button>
+                    <button
                         style={{
+                            all: 'unset',
                             border: '1px solid rgb(69, 69, 69)',
                             padding: '1px 10px',
                             display: 'flex',
                             flexDirection: 'space-between',
                             borderRadius: 10,
+                            zIndex: 999,
                         }}
+                        onClick={disLikeClick}
                     >
                         <span style={{ marginRight: 5 }}>싫어요</span>
                         <span style={{ color: 'red' }}> {disLikeNum} </span>
-                    </div>
+                    </button>
                 </div>
             </div>
         </Container>

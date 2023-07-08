@@ -71,7 +71,10 @@ function SignUpForm(props) {
                                 placeholder="이름을 입력하세요"
                                 // input의 기본 config를 작성
                                 {...register('username', {
-                                    required: '이름은 필수 입력입니다.',
+                                    required: {
+                                        value: true,
+                                        message: '이름은 필수 입력입니다.',
+                                    },
                                     minLength: {
                                         value: 3,
                                         message:
@@ -99,7 +102,10 @@ function SignUpForm(props) {
                                 placeholder="아이디를 입력하세요"
                                 // input의 기본 config를 작성
                                 {...register('userId', {
-                                    required: '아이디는 필수 입력입니다.',
+                                    required: {
+                                        value: true,
+                                        message: '아이디는 필수 입력입니다.',
+                                    },
                                     minLength: {
                                         value: 6,
                                         message:
@@ -124,12 +130,44 @@ function SignUpForm(props) {
                                 type="password"
                                 placeholder="****************"
                                 {...register('password', {
-                                    required: '비밀번호는 필수 입력입니다.',
+                                    required: {
+                                        value: true,
+                                        message: '비밀번호는 필수 입력입니다.',
+                                    },
                                     minLength: {
                                         value: 8,
                                         message:
                                             '비밀번호는 8글자 이상이어야 합니다',
                                     },
+                                    pattern: {
+                                        // input의 정규식 패턴
+                                        value: /^[a-zA-Z][0-9a-zA-Z]{8,16}$/,
+                                        message:
+                                            '가능한 문자: 8 ~ 10자 영문, 숫자 조합', // 에러 메세지
+                                    },
+                                })}
+                            />
+                            {errors.password && (
+                                <PTag role="alert">
+                                    {errors?.password?.message}
+                                </PTag>
+                            )}
+                        </div>
+                        <div>
+                            <label htmlFor="password">비밀번호 확인 : </label>
+                            <Input
+                                id="passwordCheck"
+                                type="password"
+                                placeholder="****************"
+                                {...register('passwordCheck', {
+                                    required: {
+                                        value: true,
+                                        message: '비밀번호는 필수 입력입니다.',
+                                    },
+                                    // validate: (value, data) => {
+                                    //     value === data.password ||
+                                    //         '비밀번호가 일치하지 않습니다';
+                                    // },
                                     pattern: {
                                         // input의 정규식 패턴
                                         value: /^[a-zA-Z][0-9a-zA-Z]{8,16}$/,

@@ -38,69 +38,35 @@ const Wrapper = styled.div`
 `;
 
 function MainSection(props) {
-    // const places = [
-    //     {
-    //         brand: '신사골',
-    //         brandCategory: ' | 감자탕',
-    //         brandRunTime: '24시간 영업 * 연중무휴',
-    //         menuImgSrc: `${PlaceImg01}`,
-    //         likeNum: 6,
-    //         disLikeNum: 1,
-    //         placeLink:
-    //             'https://map.naver.com/v5/entry/place/1124461473?c=15,0,0,0,dh',
-    //     },
-    //     {
-    //         brand: '멘쇼쿠',
-    //         brandCategory: ' | 라멘, 일식',
-    //         brandRunTime: '11:00 ~ 21:00 * 연중무휴',
-    //         menuImgSrc: `${PlaceImg02}`,
-    //         likeNum: 4,
-    //         disLikeNum: 2,
-    //         placeLink:
-    //             'https://map.naver.com/v5/entry/place/1124461473?c=15,0,0,0,dh',
-    //     },
-    //     {
-    //         brand: '미락카츠',
-    //         brandCategory: ' | 일식당',
-    //         brandRunTime: '11:00 ~ 20:30 * 연중무휴',
-    //         menuImgSrc: `${PlaceImg03}`,
-    //         likeNum: 5,
-    //         disLikeNum: 1,
-    //         placeLink:
-    //             'https://map.naver.com/v5/entry/place/1124461473?c=15,0,0,0,dh',
-    //     },
-    //     {
-    //         brand: '망향비빔국수',
-    //         brandCategory: ' | 국수',
-    //         brandRunTime: '11:00 ~ 20:30 * 연중무휴',
-    //         menuImgSrc: `${PlaceImg04}`,
-    //         likeNum: 10,
-    //         disLikeNum: 2,
-    //         placeLink:
-    //             'https://map.naver.com/v5/entry/place/1124461473?c=15,0,0,0,dh',
-    //     },
-    //     {
-    //         brand: '신사골',
-    //         brandCategory: ' | 감자탕',
-    //         brandRunTime: '24시간 영업 * 연중무휴',
-    //         menuImgSrc: `${PlaceImg01}`,
-    //         likeNum: 6,
-    //         disLikeNum: 1,
-    //         placeLink:
-    //             'https://map.naver.com/v5/entry/place/1124461473?c=15,0,0,0,dh',
-    //     },
-    //     {
-    //         brand: '멘쇼쿠',
-    //         brandCategory: ' | 라멘, 일식',
-    //         brandRunTime: '11:00 ~ 21:00 * 연중무휴',
-    //         menuImgSrc: `${PlaceImg02}`,
-    //         likeNum: 4,
-    //         disLikeNum: 2,
-    //         placeLink:
-    //             'https://map.naver.com/v5/entry/place/1124461473?c=15,0,0,0,dh',
-    //     },
-    // ];
+    const [likeNum, setLikeNum] = useState(0);
+    const [disLikeNum, setDisLikeNum] = useState(0);
     const [list, setList] = useState([]);
+    const likeClick = async () => {
+        setLikeNum(likeNum + 1);
+        // const response = await fetch('http://localhost:8000/api/v1/places/');
+        // const json = await response.json();
+        // const decodeJwt = (token) => {
+        //     try {
+        //         const decoded = jwt.decode(token);
+        //         return decoded;
+        //     } catch (error) {
+        //         console.error('JWT 디코드 에러:', error.message);
+        //         return null;
+        //     }
+        // };
+
+        // // 사용 예시
+        // const token = localStorage.getItem('access_token');
+        // const decodedToken = decodeJwt(token);
+        // console.log('디코드 토큰', decodedToken); // 디코드된 JWT 페이로드 출력
+        // const num = {
+        //     likes_num: likeNum,
+        // };
+        // const post = axios.post('http://localhost:8000/api/v1/places/', num);
+    };
+    const disLikeClick = () => {
+        setDisLikeNum((prev) => prev + 1);
+    };
     const navigate = useNavigate();
     const handleClick = () => {
         localStorage.getItem('access_token') === null
@@ -134,11 +100,26 @@ function MainSection(props) {
 
             setList(json);
             // setIsLoading(false);
-            console.log(json?.title);
         }
 
         fetchData();
     }, []); //// 데이터 받아오는 코드 .. 보내는거랑 받아오는거 구별 잘하기
+
+    // const decodeJwt = (token) => {
+    //     try {
+    //         const decoded = jwt.decode(token);
+    //         return decoded;
+    //     } catch (error) {
+    //         console.error('JWT 디코드 에러:', error.message);
+    //         return null;
+    //     }
+    // };
+
+    // // 사용 예시
+    // const token = localStorage.getItem('access_token');
+    // const decodedToken = decodeJwt(token);
+    // console.log(decodedToken); // 디코드된 JWT 페이로드 출력
+
     return (
         <div>
             <Header
@@ -159,11 +140,14 @@ function MainSection(props) {
                             placeBoxMinWidth="500px"
                             brand={item.title}
                             brandCategory={item.category}
-                            // brandRunTime={item[0].category}
+                            placeLink={
+                                'https://map.naver.com/v5/search/' + item.title
+                            }
                             menuImgSrc={item.image}
-                            likeNum="6"
-                            disLikeNum="1"
-                            placeLink={item.link}
+                            likeNum={likeNum}
+                            disLikeNum={disLikeNum}
+                            likeClick={likeClick}
+                            disLikeClick={disLikeClick}
                         />
                     ))}
                 </Wrapper>
