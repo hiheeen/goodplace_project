@@ -1,8 +1,4 @@
 import styled from 'styled-components';
-// import PlaceImg01 from '../img/감자탕.png';
-// import PlaceImg02 from '../img/라멘.png';
-// import PlaceImg03 from '../img/미락카츠.png';
-// import PlaceImg04 from '../img/망향비빔.png';
 import PlaceBox from '../component/PlaceBox';
 import Header from './Header';
 import { useNavigate } from 'react-router-dom';
@@ -45,6 +41,9 @@ function MainSection(props) {
     const [disLikeNum, setDisLikeNum] = useState(0);
     const [list, setList] = useState([]);
     const [Id, setId] = useState('');
+    const [isModify, setIsModify] = useState(false);
+    const [isDelete, setIsDelete] = useState(false);
+    const [modifyClick, setModifyClick] = useState(false);
     const likeClick = async () => {
         setLikeNum(likeNum + 1);
     };
@@ -139,7 +138,13 @@ function MainSection(props) {
             setId(userId);
         }
     }, []);
-
+    const handleModify = () => {
+        setIsModify(true);
+        setModifyClick(true);
+    };
+    const handleDelete = () => {
+        setIsDelete(true);
+    };
     return (
         <div>
             <Header
@@ -168,8 +173,23 @@ function MainSection(props) {
                             disLikeNum={disLikeNum}
                             likeClick={likeClick}
                             disLikeClick={disLikeClick}
-                            modifyBtn={item.user.id === Id ? 'block' : 'none'}
-                            deleteBtn={item.user.id === Id ? 'block' : 'none'}
+                            description={
+                                isModify && item.user.id === Id ? (
+                                    <div></div>
+                                ) : (
+                                    item.description
+                                )
+                            }
+                            modifyBtn={
+                                !modifyClick && item.user.id === Id
+                                    ? 'inline-block'
+                                    : 'none' //수정버튼 아직 안 눌렀고(!false=true),내 게시물(true) => 보이기//누르면 안보이기
+                            }
+                            deleteBtn={
+                                item.user.id === Id ? 'inline-block' : 'none'
+                            }
+                            handleModify={handleModify}
+                            handleDelete={handleDelete}
                         />
                     ))}
                 </Wrapper>

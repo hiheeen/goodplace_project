@@ -20,7 +20,7 @@ const Input = styled.input`
         outline: 2px solid orange;
     }
 `;
-function SearchData({ display }) {
+function SearchData() {
     const [value, setValue] = useState({
         place: '',
     });
@@ -183,7 +183,6 @@ function SearchData({ display }) {
             <div
                 className="container"
                 style={{
-                    display: display,
                     justifyContent: 'center',
                     position: 'absolute',
                     top: 0,

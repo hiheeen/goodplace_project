@@ -32,6 +32,9 @@ function PlaceBox({
     disLikeClick,
     modifyBtn,
     deleteBtn,
+    handleModify,
+    handleDelete,
+    description,
 }) {
     return (
         <Container
@@ -147,13 +150,20 @@ function PlaceBox({
                     </button>
                 </div>
                 <div>
-                    <button onClick="" style={{ display: modifyBtn }}>
+                    <button
+                        onClick={handleModify}
+                        style={{ display: modifyBtn, marginRight: '5px' }}
+                    >
                         수정하기
                     </button>
-                    <button onClick="" style={{ display: deleteBtn }}>
+                    <button
+                        onClick={handleDelete}
+                        style={{ display: deleteBtn }}
+                    >
                         삭제하기
                     </button>
                 </div>
+                <div style={{ border: '1px solid black' }}>{description}</div>
             </div>
         </Container>
     );
