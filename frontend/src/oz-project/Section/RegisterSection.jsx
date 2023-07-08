@@ -24,49 +24,6 @@ const Container = styled.div`
     z-index: 0;
 `;
 function RegisterSection(props) {
-    // const places = [
-    //     {
-    //         brand: '신사골',
-    //         brandCategory: ' | 감자탕',
-    //         brandRunTime: '24시간 영업 * 연중무휴',
-    //         menuImgSrc: `${PlaceImg01}`,
-    //         likeNum: 6,
-    //         disLikeNum: 1,
-    //         placeLink:
-    //             'https://map.naver.com/v5/entry/place/1124461473?c=15,0,0,0,dh',
-    //     },
-    //     {
-    //         brand: '멘쇼쿠',
-    //         brandCategory: ' | 라멘, 일식',
-    //         brandRunTime: '11:00 ~ 21:00 * 연중무휴',
-    //         menuImgSrc: `${PlaceImg02}`,
-    //         likeNum: 4,
-    //         disLikeNum: 2,
-    //         placeLink:
-    //             'https://map.naver.com/v5/entry/place/1124461473?c=15,0,0,0,dh',
-    //     },
-    //     {
-    //         brand: '미락카츠',
-    //         brandCategory: ' | 일식당',
-    //         brandRunTime: '11:00 ~ 20:30 * 연중무휴',
-    //         menuImgSrc: `${PlaceImg03}`,
-    //         likeNum: 5,
-    //         disLikeNum: 1,
-    //         placeLink:
-    //             'https://map.naver.com/v5/entry/place/1124461473?c=15,0,0,0,dh',
-    //     },
-    //     {
-    //         brand: '망향비빔국수',
-    //         brandCategory: ' | 국수',
-    //         brandRunTime: '11:00 ~ 20:30 * 연중무휴',
-    //         menuImgSrc: `${PlaceImg04}`,
-    //         likeNum: 10,
-    //         disLikeNum: 2,
-    //         placeLink:
-    //             'https://map.naver.com/v5/entry/place/1124461473?c=15,0,0,0,dh',
-    //     },
-    // ];
-
     // const isMobile = useMediaQuery({ query: '(max-width:768px)' });
 
     return (
@@ -79,22 +36,6 @@ function RegisterSection(props) {
                     style={{ height: 'calc(100vh - 50px)' }}
                 >
                     <SearchData />
-                    {/* {!isMobile &&
-                        places.map((place) => (
-                            <PlaceBoxRegister
-                                style={{
-                                    flexDirection: 'row',
-                                    zIndex: 50,
-                                }}
-                                brand={place.brand}
-                                brandCategory={place.brandCategory}
-                                brandRunTime={place.brandRunTime}
-                                menuImgSrc={place.menuImgSrc}
-                                likeNum={place.likeNum}
-                                disLikeNum={place.disLikeNum}
-                                placeLink={place.placeLink}
-                            />
-                        ))} */}
                 </Wrapper>
             </Container>
         </div>

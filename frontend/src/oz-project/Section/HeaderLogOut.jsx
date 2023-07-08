@@ -66,6 +66,7 @@ function HeaderLogOut({ centerDisplay, handleClick }) {
         const token = {
             refresh_token: localStorage.getItem('refresh_token'),
         };
+        console.log(token);
         const logOut = await axios.post(
             'http://localhost:8000/api/v1/users/logout/',
             token

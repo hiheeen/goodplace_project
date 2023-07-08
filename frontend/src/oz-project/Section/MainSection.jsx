@@ -39,9 +39,12 @@ const Wrapper = styled.div`
 `;
 
 function MainSection(props) {
+    const [loggedIn, setLoggedIn] = useState(false);
+    const [user, setUser] = useState(null);
     const [likeNum, setLikeNum] = useState(0);
     const [disLikeNum, setDisLikeNum] = useState(0);
     const [list, setList] = useState([]);
+    const [Id, setId] = useState('');
     const likeClick = async () => {
         setLikeNum(likeNum + 1);
     };
@@ -100,9 +103,42 @@ function MainSection(props) {
     // const token = localStorage.getItem('access_token');
     // const decodedToken = decodeJwt(token);
     // console.log(decodedToken); // 디코드된 JWT 페이로드 출력
-    const accessToken = localStorage.getItem('access_token');
-    const decodedToken = jwt_decode(accessToken);
-    const userId = decodedToken.user_id;
+    useEffect(() => {
+        const token = localStorage.getItem('access_token');
+
+        if (token) {
+            // 토큰이 존재하면 유효성 검사를 수행
+            const decodedToken = jwt_decode(token);
+
+            // 토큰의 만료 시간 확인
+            const currentTime = Date.now() / 1000; // 현재 시간 (밀리초를 초로 변환)
+            if (decodedToken.exp < currentTime) {
+                // 토큰이 만료되었으면 로그아웃 처리
+                setLoggedIn(false);
+                setUser(null);
+                // localStorage.removeItem('access_token');
+            } else {
+                // 토큰이 유효한 경우 로그인 상태로 설정
+                setLoggedIn(true);
+                setUser(decodedToken);
+            }
+        } else {
+            // 토큰이 없으면 로그아웃 상태로 설정
+            setLoggedIn(false);
+            setUser(null);
+        }
+    }, []);
+    useEffect(() => {
+        const accessToken = localStorage.getItem('access_token');
+        if (accessToken) {
+            const decodedToken = jwt_decode(accessToken);
+            const userId = decodedToken.user_id;
+            setId(userId);
+        } else {
+            const userId = '';
+            setId(userId);
+        }
+    }, []);
 
     return (
         <div>
@@ -132,12 +168,8 @@ function MainSection(props) {
                             disLikeNum={disLikeNum}
                             likeClick={likeClick}
                             disLikeClick={disLikeClick}
-                            modifyBtn={
-                                item.user.id === userId ? 'block' : 'none'
-                            }
-                            deleteBtn={
-                                item.user.id === userId ? 'block' : 'none'
-                            }
+                            modifyBtn={item.user.id === Id ? 'block' : 'none'}
+                            deleteBtn={item.user.id === Id ? 'block' : 'none'}
                         />
                     ))}
                 </Wrapper>

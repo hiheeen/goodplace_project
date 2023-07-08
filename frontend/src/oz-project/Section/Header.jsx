@@ -2,6 +2,8 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 // import { useState } from 'react';
 import axios from 'axios';
+import { useState, useEffect } from 'react';
+import jwt_decode from 'jwt-decode';
 const Container = styled.div`
     position: fixed;
     z-index: 1000;
@@ -84,10 +86,12 @@ function Header({ centerDisplay, handleClick }) {
     // refresh_token )
 
     // }
+
     const handleLogOut = async () => {
         const token = {
             refresh_token: localStorage.getItem('refresh_token'),
         };
+        console.log(token);
         const logOut = await axios.post(
             'http://localhost:8000/api/v1/users/logout/',
             token
@@ -95,8 +99,12 @@ function Header({ centerDisplay, handleClick }) {
 
         navigate('/', { replace: true });
         localStorage.clear();
+        console.log('라라', localStorage.getItem('access_token'));
         // setIsLogOut(true);
+        // setLoggedIn(false);
+        // setUser(null);
     };
+
     return (
         <div>
             <Container>
