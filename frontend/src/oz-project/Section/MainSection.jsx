@@ -8,6 +8,7 @@ import Header from './Header';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { useEffect } from 'react';
+import jwt_decode from 'jwt-decode';
 const Container = styled.div`
     box-sizing: border-box;
     // background-color: rgb(250, 240, 228);
@@ -43,26 +44,6 @@ function MainSection(props) {
     const [list, setList] = useState([]);
     const likeClick = async () => {
         setLikeNum(likeNum + 1);
-        // const response = await fetch('http://localhost:8000/api/v1/places/');
-        // const json = await response.json();
-        // const decodeJwt = (token) => {
-        //     try {
-        //         const decoded = jwt.decode(token);
-        //         return decoded;
-        //     } catch (error) {
-        //         console.error('JWT 디코드 에러:', error.message);
-        //         return null;
-        //     }
-        // };
-
-        // // 사용 예시
-        // const token = localStorage.getItem('access_token');
-        // const decodedToken = decodeJwt(token);
-        // console.log('디코드 토큰', decodedToken); // 디코드된 JWT 페이로드 출력
-        // const num = {
-        //     likes_num: likeNum,
-        // };
-        // const post = axios.post('http://localhost:8000/api/v1/places/', num);
     };
     const disLikeClick = () => {
         setDisLikeNum((prev) => prev + 1);
@@ -119,6 +100,9 @@ function MainSection(props) {
     // const token = localStorage.getItem('access_token');
     // const decodedToken = decodeJwt(token);
     // console.log(decodedToken); // 디코드된 JWT 페이로드 출력
+    const accessToken = localStorage.getItem('access_token');
+    const decodedToken = jwt_decode(accessToken);
+    const userId = decodedToken.user_id;
 
     return (
         <div>
@@ -148,6 +132,12 @@ function MainSection(props) {
                             disLikeNum={disLikeNum}
                             likeClick={likeClick}
                             disLikeClick={disLikeClick}
+                            modifyBtn={
+                                item.user.id === userId ? 'block' : 'none'
+                            }
+                            deleteBtn={
+                                item.user.id === userId ? 'block' : 'none'
+                            }
                         />
                     ))}
                 </Wrapper>

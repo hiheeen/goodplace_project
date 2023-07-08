@@ -70,7 +70,7 @@ function SearchData({ display }) {
             method: 'post',
             url: 'http://localhost:8000/api/v1/places/search_place/',
             data: formData,
-            headers: { authorization: `Bearer ${getCookie('place')}` },
+            // headers: { authorization: `Bearer ${getCookie('place')}` },
         })
             .then((response) => {
                 console.log('response.data', response.data);

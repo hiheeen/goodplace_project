@@ -30,6 +30,8 @@ function PlaceBox({
     placeBoxMinWidth,
     likeClick,
     disLikeClick,
+    modifyBtn,
+    deleteBtn,
 }) {
     return (
         <Container
@@ -142,6 +144,14 @@ function PlaceBox({
                     >
                         <span style={{ marginRight: 5 }}>싫어요</span>
                         <span style={{ color: 'red' }}> {disLikeNum} </span>
+                    </button>
+                </div>
+                <div>
+                    <button onClick="" style={{ display: modifyBtn }}>
+                        수정하기
+                    </button>
+                    <button onClick="" style={{ display: deleteBtn }}>
+                        삭제하기
                     </button>
                 </div>
             </div>

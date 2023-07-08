@@ -11,6 +11,12 @@ import RegisterBox from './oz-project/component/RegisterBox';
 import SignUpForm from './oz-project/Section/SignUpForm';
 import LogInForm from './oz-project/Section/LogInForm';
 const Wrapper = styled.div``;
+
+// axios.defaults.headers.common[
+//     'Authorization'
+// ] = `Bearer ${data['access']}`; // 설명을 다시 듣던지.. 공부를 하던지... 봐도 모르겠다
+// // window.location.href = '/';
+// navigate('/', { replace: true });
 function App() {
     return (
         <div>
