@@ -45,11 +45,9 @@ function RegisterSection(props) {
     const [review, setReview] = useState({
         description: '',
     });
-
+    const [keyword, setKeyword] = useState('');
     const [datas, setDatas] = useState([]);
-    // const [list, setList] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-    // const [resName, setResName] = useState(`${value.place}`);
     const [displayButton, setDisplayButton] = useState('inline-block');
     const [displayRegisterForm, setDisplayRegisterForm] = useState('none');
     const handleClick = () => {
@@ -65,9 +63,6 @@ function RegisterSection(props) {
     const handleDescription = (e) => {
         setReview(e.target.value);
     };
-    // const handleNameChange = (e) => {
-    //     setResName(e.target.value);
-    // };
 
     const fetchData = async () => {
         if (value.place === '') return;
@@ -91,10 +86,11 @@ function RegisterSection(props) {
             // headers: { authorization: `Bearer ${getCookie('place')}` },
         })
             .then((response) => {
-                console.log('response.data', response.data);
+                // console.log('response.data', response.data);
                 setDatas(response.data);
-                console.log(datas);
+                console.log(datas?.place.items[0].mapx);
                 setIsLoading(false);
+
                 // const accessToken = response.data.token;
                 // setCookie('place', accessToken);
             })
@@ -112,15 +108,6 @@ function RegisterSection(props) {
         fetchData();
     }, []);
 
-    // csrftoken을 header에 넣어야 한다는데 아무리 해도 장고에 토큰 전달이 안!!!!됨!!!!!!1
-    // const getDatas = async () => {
-    //     const response = await fetch('http://localhost:8000/api/v1/places/');
-    //     const json = await response.json();
-
-    //     setDatas(json);
-    //     setIsLoading(false);
-    //     console.log(json[0]?.title);
-    // };
     const navigate = useNavigate();
 
     const handleRegister = (e) => {
@@ -131,68 +118,15 @@ function RegisterSection(props) {
             category: e.target.category.value,
             link: e.target.link.value,
             image: e.target.image.value,
+            description: e.target.description.value,
         };
         console.log(place);
-        const places = axios.postForm(
+        const places = axios.post(
             'http://localhost:8000/api/v1/places/create_place/',
             place
         );
         navigate('/', { replace: true });
     }; ///// 작동 되는 부분
-    // const handleRegister = async (e) => {
-    //     e.preventDefault();
-
-    //     const response = await fetch('http://localhost:8000/api/v1/places/');
-    //     const json = await response.json();
-
-    //     setList(json);
-    //     // setIsLoading(false);
-    //     console.log(json[0]?.title);
-    // };
-
-    // useEffect(() => {
-    //     async function fetchData() {
-    //         const response = await fetch(
-    //             'http://localhost:8000/api/v1/places/'
-    //         );
-    //         const json = await response.json();
-
-    //         setList(json);
-    //         // setIsLoading(false);
-    //         // console.log(json[0]?.title);
-    //     }
-
-    //     fetchData();
-    // }, []); //// 데이터 받아오는 코드 .. 보내는거랑 받아오는거 구별 잘하기
-
-    // console.log('datas', datas); // 비동기니까 이 시점엔 데이터가 없다. 이유 정확하게 알기
-
-    // const handleRegister = async (e) => {
-    //     e.preventDefault();
-    //     const formData = new FormData();
-    //     formData.append('title', datas.place.items[0].title);
-    //     formData.append('category', datas.place.items[0].category);
-    //     formData.append(
-    //         'link',
-    //         'https://map.naver.com/v5/search/' + value.place
-    //     );
-    //     formData.append('image', datas.image.items[0].link);
-    //     formData.append('description', value.description);
-    //     fetch('http://localhost:8000/api/v1/places/create_place/', {
-    //         method: 'POST',
-    //         cache: 'no-cache',
-    //         body: formData, // body 부분에 폼데이터 변수를 할당
-    //     })
-    //         .then((response) => response.json())
-    //         .then((data) => {
-    //             console.log(data);
-    //         });
-    // }; // 비동기니까 제출을 눌러야 실행이 된다!@!!!!!!!!1
-
-    // const blob = new Blob([JSON.stringify(dataObj)], {
-    //     type: 'application/json',
-    //   });
-    //   formData.append('info', blob)
 
     const createApi = 'http://localhost:8000/api/v1/places/create_place/';
 
@@ -200,7 +134,14 @@ function RegisterSection(props) {
         <div>
             <HeaderLogOut registerDisplay="flex" centerDisplay="none" />
             <Container>
-                <Map searchValue="강남구 테헤란로" />
+                <Map
+                    mapx={
+                        Object.keys(datas).length && datas.place.items[0].mapx
+                    }
+                    mapy={
+                        Object.keys(datas).length && datas.place.items[0].mapy
+                    }
+                />
                 <Wrapper
                     className="searchData_wrapper"
                     style={{ height: 'calc(100vh - 50px)' }}
@@ -270,9 +211,8 @@ function RegisterSection(props) {
                             ) : Object.keys(datas).length ? (
                                 <PlaceBoxRegister
                                     brandRunTime="24시간"
-                                    likeNum="6"
-                                    disLikeNum="2"
-                                    placeLink=""
+                                    // likeNum="6"
+                                    // disLikeNum="2"
                                     res_name={datas.place.items[0].title}
                                     res_img={datas.image.items[0].link}
                                     res_category={datas.place.items[0].category}
@@ -375,3 +315,53 @@ function RegisterSection(props) {
     );
 }
 export default RegisterSection;
+
+// const handleRegister = async (e) => {
+//     e.preventDefault();
+
+//     const response = await fetch('http://localhost:8000/api/v1/places/');
+//     const json = await response.json();
+
+//     setList(json);
+//     // setIsLoading(false);
+//     console.log(json[0]?.title);
+// };
+
+// useEffect(() => {
+//     async function fetchData() {
+//         const response = await fetch(
+//             'http://localhost:8000/api/v1/places/'
+//         );
+//         const json = await response.json();
+
+//         setList(json);
+//         // setIsLoading(false);
+//         // console.log(json[0]?.title);
+//     }
+
+//     fetchData();
+// }, []); //// 데이터 받아오는 코드 .. 보내는거랑 받아오는거 구별 잘하기
+
+// console.log('datas', datas); // 비동기니까 이 시점엔 데이터가 없다. 이유 정확하게 알기
+
+// const handleRegister = async (e) => {
+//     e.preventDefault();
+//     const formData = new FormData();
+//     formData.append('title', datas.place.items[0].title);
+//     formData.append('category', datas.place.items[0].category);
+//     formData.append(
+//         'link',
+//         'https://map.naver.com/v5/search/' + value.place
+//     );
+//     formData.append('image', datas.image.items[0].link);
+//     formData.append('description', value.description);
+//     fetch('http://localhost:8000/api/v1/places/create_place/', {
+//         method: 'POST',
+//         cache: 'no-cache',
+//         body: formData, // body 부분에 폼데이터 변수를 할당
+//     })
+//         .then((response) => response.json())
+//         .then((data) => {
+//             console.log(data);
+//         });
+// }; // 비동기니까 제출을 눌러야 실행이 된다!@!!!!!!!!1
