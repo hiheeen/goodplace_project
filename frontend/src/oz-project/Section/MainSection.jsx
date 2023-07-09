@@ -5,6 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import jwt_decode from 'jwt-decode';
+import axios from 'axios';
+
 const Container = styled.div`
     box-sizing: border-box;
     // background-color: rgb(250, 240, 228);
@@ -39,17 +41,77 @@ function MainSection(props) {
     const [user, setUser] = useState(null);
     const [likeNum, setLikeNum] = useState(0);
     const [disLikeNum, setDisLikeNum] = useState(0);
+    const [isLikeClick, setIsLikeClick] = useState(false);
+    const [isDisLikeClick, setIsDisLikeClick] = useState(false);
     const [list, setList] = useState([]);
     const [Id, setId] = useState('');
     const [isModify, setIsModify] = useState(false);
     const [isDelete, setIsDelete] = useState(false);
     const [modifyClick, setModifyClick] = useState(false);
-    const likeClick = async () => {
+    const [modifyDescription, setModifyDescription] = useState('');
+
+    const likeClick = async (itemId) => {
+        setIsLikeClick(true);
         setLikeNum(likeNum + 1);
+        const token = localStorage.getItem('access_token');
+
+        if (token) {
+            const response = await axios
+                .post(
+                    `http://localhost:8000/api/v1/places/like_place/${itemId}/`,
+                    {},
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                )
+                .then((response) => console.log('좋아요 누른 데이터 전송 완료'))
+                .catch((error) => {
+                    // 요청 실패 시 이전에 증가시킨 좋아요 수를 다시 감소시킴
+                    // setLikeNum((prevLikeNum) => prevLikeNum - 1);
+                    console.error('좋아요 클릭 에러:', error);
+                });
+        }
+        if (isDisLikeClick) {
+            alert('이미 "싫어요"를 누르셨어요! 취소하고 다시 와주세요^^');
+        }
+        // const likeResponse = await axios.get(
+        //     'http://localhost:8000/api/v1/places',
+        //     {
+        //         headers: {
+        //             Authorization: `Bearer ${token}`,
+        //         },
+        //     }
+        // );
+
+        // window.location.reload(); /// 새로고침 말고 버튼 부분만 리렌더링 시키고 싶은데 도저히 방법을 못 찾겠다....
+        // 컴포넌트 분리..? 아니면 어떻게ㅠㅠㅠ??
     };
-    const disLikeClick = () => {
-        setDisLikeNum((prev) => prev + 1);
+    const disLikeClick = async (itemId) => {
+        setIsDisLikeClick(true);
+        const token = localStorage.getItem('access_token');
+
+        if (!isLikeClick && token) {
+            const response = await axios
+                .post(
+                    `http://localhost:8000/api/v1/places/hate_place/${itemId}/`,
+                    {}, // 꼭 빈 객체로 전달할 것.
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                )
+                .then((response) => console.log('싫어요 누른 데이터 전송 완료'))
+                .catch((error) => console.log('싫어요 실패'));
+        }
+        if (isLikeClick) {
+            alert('이미 "좋아요"를 누르셨어요! 취소하고 다시 와주세요^^');
+        }
+        // window.location.reload();
     };
+
     const navigate = useNavigate();
     const handleClick = () => {
         localStorage.getItem('access_token') === null
@@ -142,8 +204,51 @@ function MainSection(props) {
         setIsModify(true);
         setModifyClick(true);
     };
-    const handleDelete = () => {
-        setIsDelete(true);
+    // const handleDelete = () => {
+    //     setIsDelete(true);
+    // };
+    const modifyOnChange = (e) => {
+        setModifyDescription(e.target.value);
+    };
+    const handleSave = async (itemId) => {
+        const data = {
+            description: modifyDescription,
+        };
+        console.log('리뷰', data);
+        const description = axios.put(
+            `http://localhost:8000/api/v1/places/modify_place/${itemId}/`,
+            data
+        );
+
+        setModifyClick(false);
+        setIsModify(false);
+        window.location.reload();
+    };
+    // const handleDelete = async (itemId) => {
+    //     axios.delete(
+    //         'http://localhost:8000/api/v1/places/delete_place/' + itemId + '/'
+    //     );
+    // };
+    const handleDelete = async (itemId) => {
+        try {
+            const token = localStorage.getItem('access_token');
+
+            const response = await axios.delete(
+                `http://localhost:8000/api/v1/places/delete_place/${itemId}/`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+
+            // 삭제 요청에 대한 처리
+            console.log('삭제 요청 결과:', response);
+        } catch (error) {
+            // 에러 처리
+            console.error('삭제 요청 에러:', error);
+        }
+        window.location.reload();
     };
     return (
         <div>
@@ -154,44 +259,71 @@ function MainSection(props) {
             />
             <Container>
                 <Wrapper>
-                    {list.map((item) => (
-                        <PlaceBox
-                            imgDisplay="flex"
-                            placeBoxDisplay="grid"
-                            boxRadius="10px"
-                            imgGridColumns="1fr 1fr"
-                            imgWidth="230px"
-                            placeBoxHeight="200px"
-                            placeBoxMinWidth="500px"
-                            brand={item.title}
-                            brandCategory={item.category}
-                            placeLink={
-                                'https://map.naver.com/v5/search/' + item.title
-                            }
-                            menuImgSrc={item.image}
-                            likeNum={likeNum}
-                            disLikeNum={disLikeNum}
-                            likeClick={likeClick}
-                            disLikeClick={disLikeClick}
-                            description={
-                                isModify && item.user.id === Id ? (
-                                    <div></div>
-                                ) : (
-                                    item.description
-                                )
-                            }
-                            modifyBtn={
-                                !modifyClick && item.user.id === Id
-                                    ? 'inline-block'
-                                    : 'none' //수정버튼 아직 안 눌렀고(!false=true),내 게시물(true) => 보이기//누르면 안보이기
-                            }
-                            deleteBtn={
-                                item.user.id === Id ? 'inline-block' : 'none'
-                            }
-                            handleModify={handleModify}
-                            handleDelete={handleDelete}
-                        />
-                    ))}
+                    {list.map((item) => {
+                        // const likeNum = item.like_user.length;
+                        return (
+                            <PlaceBox
+                                imgDisplay="flex"
+                                placeBoxDisplay="grid"
+                                boxRadius="10px"
+                                imgGridColumns="1fr 1fr"
+                                imgWidth="230px"
+                                placeBoxHeight="200px"
+                                placeBoxMinWidth="500px"
+                                brand={item.title}
+                                brandCategory={item.category}
+                                placeLink={
+                                    'https://map.naver.com/v5/search/' +
+                                    item.title
+                                }
+                                menuImgSrc={item.image}
+                                likeNum={item.like_user.length}
+                                disLikeNum={item.hate_user.length}
+                                likeClick={() => likeClick(item.id)}
+                                disLikeClick={() => disLikeClick(item.id)}
+                                description={item.description}
+                                modifyDescription={
+                                    !modifyClick && item.user.id === Id
+                                        ? ''
+                                        : modifyDescription
+                                }
+                                displayModifyDeleteBtn={
+                                    !modifyClick && item.user.id === Id
+                                        ? 'inline-block'
+                                        : 'none' //수정버튼 아직 안 눌렀고(!false=true),내 게시물(true) => 보이기//누르면 안보이기
+                                }
+                                deleteBtn={
+                                    item.user.id === Id
+                                        ? 'inline-block'
+                                        : 'none'
+                                }
+                                handleModify={handleModify}
+                                modifyDisplay={
+                                    modifyClick && item.user.id === Id
+                                        ? 'block'
+                                        : 'none'
+                                }
+                                originalDisplay={
+                                    modifyClick && item.user.id === Id
+                                        ? 'none'
+                                        : 'block'
+                                }
+                                modifyOnChange={modifyOnChange}
+                                saveDisplay={
+                                    modifyClick && item.user.id === Id //item.user.id 는 게시글 작성한 유저, Id는 로그인 유저
+                                        ? 'block'
+                                        : 'none'
+                                }
+                                handleSave={() => handleSave(item.id)}
+                                handleDelete={() => handleDelete(item.id)}
+                                // likeColor={
+                                //     isLikeClick && item.like_user.includes(Id)
+                                //         ? 'lightblue'
+                                //         : ''
+                                // }
+                            />
+                        );
+                    })}
                 </Wrapper>
             </Container>
         </div>

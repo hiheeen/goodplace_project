@@ -103,6 +103,7 @@ function Header({ centerDisplay, handleClick }) {
         // setIsLogOut(true);
         // setLoggedIn(false);
         // setUser(null);
+        window.location.reload();
     };
 
     return (

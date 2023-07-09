@@ -10,6 +10,7 @@ import { Cookies } from 'react-cookie';
 import CSRFToken from '../etc/CSRFToken';
 import PlaceBoxRegister from '../component/PlaceBoxRegister';
 import { useNavigate } from 'react-router-dom';
+import jwt_decode from 'jwt-decode';
 
 const Button = styled.div`
     all: unset;
@@ -50,6 +51,7 @@ function RegisterSection(props) {
     const [isLoading, setIsLoading] = useState(true);
     const [displayButton, setDisplayButton] = useState('inline-block');
     const [displayRegisterForm, setDisplayRegisterForm] = useState('none');
+
     const handleClick = () => {
         setDisplayButton('none');
         setDisplayRegisterForm('block');
@@ -121,9 +123,15 @@ function RegisterSection(props) {
             description: e.target.description.value,
         };
         console.log(place);
+        const token = localStorage.getItem('access_token');
         const places = axios.post(
             'http://localhost:8000/api/v1/places/create_place/',
-            place
+            place,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }
         );
         navigate('/', { replace: true });
     }; ///// 작동 되는 부분

@@ -30,12 +30,30 @@ function PlaceBox({
     placeBoxMinWidth,
     likeClick,
     disLikeClick,
-    modifyBtn,
-    deleteBtn,
+    displayModifyDeleteBtn,
     handleModify,
     handleDelete,
     description,
+    modifyDisplay,
+    originalDisplay,
+    modifyOnChange,
+    modifyDescription,
+    saveDisplay,
+    handleSave,
+    likeColor,
 }) {
+    const onSave = () => {
+        handleSave();
+    };
+    const onDelete = () => {
+        handleDelete();
+    };
+    const onLike = () => {
+        likeClick();
+    };
+    const onDisLike = () => {
+        disLikeClick();
+    };
     return (
         <Container
             style={{
@@ -127,10 +145,12 @@ function PlaceBox({
                             flexDirection: 'space-between',
                             borderRadius: 10,
                             zIndex: 999,
+                            backgroundColor: likeColor,
                         }}
-                        onClick={likeClick}
+                        onClick={onLike}
                     >
                         <span style={{ marginRight: 5 }}>좋아요</span>
+
                         <span style={{ color: 'blue' }}> {likeNum} </span>
                     </button>
                     <button
@@ -143,27 +163,71 @@ function PlaceBox({
                             borderRadius: 10,
                             zIndex: 999,
                         }}
-                        onClick={disLikeClick}
+                        onClick={onDisLike}
                     >
                         <span style={{ marginRight: 5 }}>싫어요</span>
                         <span style={{ color: 'red' }}> {disLikeNum} </span>
                     </button>
                 </div>
+
+                <div
+                    className="original_description"
+                    style={{
+                        border: '1px solid black',
+                        height: '50px',
+                        display: originalDisplay,
+                        borderRadius: '5px',
+                        border: '1px solid white',
+                        boxShadow: '0 3px 6px 0 rgba(0,0,0,.2)',
+                        fontSize: '13px',
+                        marginBottom: '10px',
+                    }}
+                >
+                    {description}
+                </div>
+                <input
+                    className="modify_description"
+                    onChange={modifyOnChange}
+                    value={modifyDescription}
+                    style={{
+                        border: '1px solid black',
+                        height: '50px',
+                        display: modifyDisplay,
+                        border: '1px solid white',
+                        boxShadow: '0 3px 6px 0 rgba(0,0,0,.2)',
+                        marginBottom: '5px',
+                        fontSize: '13px',
+                    }}
+                ></input>
                 <div>
                     <button
                         onClick={handleModify}
-                        style={{ display: modifyBtn, marginRight: '5px' }}
+                        style={{
+                            display: displayModifyDeleteBtn,
+                            marginRight: '5px',
+                            fontSize: '5px',
+                        }}
                     >
                         수정하기
                     </button>
                     <button
-                        onClick={handleDelete}
-                        style={{ display: deleteBtn }}
+                        onClick={onDelete}
+                        style={{
+                            display: displayModifyDeleteBtn,
+                            fontSize: '5px',
+                        }}
                     >
                         삭제하기
                     </button>
                 </div>
-                <div style={{ border: '1px solid black' }}>{description}</div>
+                <div>
+                    <button
+                        onClick={onSave}
+                        style={{ display: saveDisplay, fontSize: '5px' }}
+                    >
+                        저장
+                    </button>
+                </div>
             </div>
         </Container>
     );
