@@ -49,10 +49,48 @@ function MainSection(props) {
     const [isDelete, setIsDelete] = useState(false);
     const [modifyClick, setModifyClick] = useState(false);
     const [modifyDescription, setModifyDescription] = useState('');
+    const [likeList, setLikeList] = useState({});
 
+    // const likeClick = async (itemId) => {
+    //     const token = localStorage.getItem('access_token');
+
+    //     if (token) {
+    //         const response = await axios
+    //             .post(
+    //                 `http://localhost:8000/api/v1/places/like_place/${itemId}/`,
+    //                 {},
+    //                 {
+    //                     headers: {
+    //                         Authorization: `Bearer ${token}`,
+    //                     },
+    //                 }
+    //             )
+    //             .then((response) => console.log('좋아요 누른 데이터 전송 완료'))
+    //             .catch((error) => {
+    //                 // 요청 실패 시 이전에 증가시킨 좋아요 수를 다시 감소시킴
+    //                 // setLikeNum((prevLikeNum) => prevLikeNum - 1);
+    //                 console.error('좋아요 클릭 에러:', error);
+    //             });
+    //     }
+    //     if (isDisLikeClick) {
+    //         alert('이미 "싫어요"를 누르셨어요! 취소하고 다시 와주세요^^');
+    //     }
+    //     if (isLikeClick) {
+    //       setIsLikeClick(false); // 좋아요 취소
+    //       setLikeNum((prevLikeNum) => prevLikeNum - 1); // 좋아요 수 감소
+    //       // 나머지 코드 생략
+    //     } else {
+    //       setIsLikeClick(true);
+    //       setLikeNum((prevLikeNum) => prevLikeNum + 1); // 좋아요 수 증가
+    //       // 나머지 코드 생략
+    //     }
+    //   };
     const likeClick = async (itemId) => {
         setIsLikeClick(true);
-        setLikeNum(likeNum + 1);
+        // list.map((item) => {
+        //     setLikeNum(item.like_user.length);
+        // });
+        // setLikeNum(likeNum + 1);
         const token = localStorage.getItem('access_token');
 
         if (token) {
@@ -72,22 +110,38 @@ function MainSection(props) {
                     // setLikeNum((prevLikeNum) => prevLikeNum - 1);
                     console.error('좋아요 클릭 에러:', error);
                 });
+            window.location.reload();
+        } else {
+            alert('로그인 후 이용해주세요');
+            return;
         }
         if (isDisLikeClick) {
             alert('이미 "싫어요"를 누르셨어요! 취소하고 다시 와주세요^^');
         }
-        // const likeResponse = await axios.get(
-        //     'http://localhost:8000/api/v1/places',
-        //     {
-        //         headers: {
-        //             Authorization: `Bearer ${token}`,
-        //         },
-        //     }
+        const likeResponse = await axios
+            .get(`http://localhost:8000/api/v1/places/`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            })
+            .then((response) => {
+                setLikeList(response.data.like_user);
+                console.log('기존 데이터', response.data.like_user);
+            });
+        // const like = useEffect(
+        //    likeList.map(item) => {
+        //         setLikeNum(item.length);
+        //         if (item.includes(Id)) {
+        //             setLikeNum((prev) => prev + 1);
+        //         } else setLikeNum((prev) => prev - 1);
+        //         return likeNum;
+        //     },
+        //     [likeNum]
         // );
-
         // window.location.reload(); /// 새로고침 말고 버튼 부분만 리렌더링 시키고 싶은데 도저히 방법을 못 찾겠다....
         // 컴포넌트 분리..? 아니면 어떻게ㅠㅠㅠ??
     };
+
     const disLikeClick = async (itemId) => {
         setIsDisLikeClick(true);
         const token = localStorage.getItem('access_token');
@@ -105,6 +159,10 @@ function MainSection(props) {
                 )
                 .then((response) => console.log('싫어요 누른 데이터 전송 완료'))
                 .catch((error) => console.log('싫어요 실패'));
+            window.location.reload();
+        } else {
+            alert('로그인 후 이용해주세요');
+            return;
         }
         if (isLikeClick) {
             alert('이미 "좋아요"를 누르셨어요! 취소하고 다시 와주세요^^');
@@ -250,6 +308,7 @@ function MainSection(props) {
         }
         window.location.reload();
     };
+
     return (
         <div>
             <Header
@@ -292,11 +351,11 @@ function MainSection(props) {
                                         ? 'inline-block'
                                         : 'none' //수정버튼 아직 안 눌렀고(!false=true),내 게시물(true) => 보이기//누르면 안보이기
                                 }
-                                deleteBtn={
-                                    item.user.id === Id
-                                        ? 'inline-block'
-                                        : 'none'
-                                }
+                                // deleteBtn={
+                                //     item.user.id === Id
+                                //         ? 'inline-block'
+                                //         : 'none'
+                                // }
                                 handleModify={handleModify}
                                 modifyDisplay={
                                     modifyClick && item.user.id === Id

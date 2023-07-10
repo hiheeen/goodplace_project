@@ -90,7 +90,7 @@ function RegisterSection(props) {
             .then((response) => {
                 // console.log('response.data', response.data);
                 setDatas(response.data);
-                console.log(datas?.place.items[0].mapx);
+                console.log(datas?.place.items[0].address);
                 setIsLoading(false);
 
                 // const accessToken = response.data.token;
@@ -143,12 +143,11 @@ function RegisterSection(props) {
             <HeaderLogOut registerDisplay="flex" centerDisplay="none" />
             <Container>
                 <Map
-                    mapx={
-                        Object.keys(datas).length && datas.place.items[0].mapx
-                    }
-                    mapy={
-                        Object.keys(datas).length && datas.place.items[0].mapy
-                    }
+                    // address={
+                    //     Object.keys(datas).length &&
+                    //     datas?.place.items[0].address
+                    // }
+                    address="서울특별시 서초구 잠원동 14-17 1층 신사골감자탕 신사점"
                 />
                 <Wrapper
                     className="searchData_wrapper"

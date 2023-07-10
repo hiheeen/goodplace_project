@@ -4,6 +4,7 @@ import Header from './Header';
 import { Reset } from 'styled-reset';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 const Form = styled.form`
     width: 400px;
     height: 200px;
@@ -40,6 +41,8 @@ const Input = styled.input`
     border-radius: 5px;
 `;
 function SignUpForm(props) {
+    const [passwordMatch, setPasswordMatch] = useState(true); // 비밀번호 일치 여부 상태값
+
     const {
         register,
         watch,
@@ -48,6 +51,12 @@ function SignUpForm(props) {
     } = useForm();
     const navigate = useNavigate();
     const onSubmit = async (data) => {
+        if (data.password !== data.passwordCheck) {
+            // 비밀번호와 비밀번호 확인이 일치하지 않을 경우
+            setPasswordMatch(false);
+            alert('비밀번호가 일치하지 않습니다');
+            return;
+        }
         const signUp = axios.post(
             'http://localhost:8000/api/v1/users/create_user/',
             data
@@ -82,18 +91,19 @@ function SignUpForm(props) {
                                     },
                                     pattern: {
                                         // input의 정규식 패턴
-                                        value: /^[A-za-z0-9가-힣]/,
+                                        value: /^[A-za-z가-힣]/,
                                         message:
                                             '가능한 문자: 영문 대소문자, 글자 단위 한글', // 에러 메세지
                                     },
                                 })}
                             />
-                            {errors.nickname && (
-                                <PTag role="alert">
-                                    {errors?.nickname?.message}
-                                </PTag>
-                            )}
                         </div>
+                        {errors.username && (
+                            <PTag role="alert">
+                                {errors?.username?.message}
+                            </PTag>
+                        )}
+
                         <div>
                             <label htmlFor="userId">아이디 : </label>
                             <Input
@@ -113,14 +123,16 @@ function SignUpForm(props) {
                                     },
                                     pattern: {
                                         // input의 정규식 패턴
-                                        value: /^[A-za-z0-9가-힣]{6,15}$/,
+                                        value: /^[a-zA-Z][0-9a-zA-Z]{6,20}$/,
                                         message:
-                                            '가능한 문자: 영문 대소문자, 글자 단위 한글, 숫자', // 에러 메세지
+                                            '가능한 문자: 영문 대소문자, 숫자', // 에러 메세지
                                     },
                                 })}
                             />
-                            {errors.id && (
-                                <PTag role="alert">{errors?.id?.message}</PTag>
+                            {errors.userId && (
+                                <PTag role="alert">
+                                    {errors?.userId?.message}
+                                </PTag>
                             )}
                         </div>
                         <div>
@@ -141,7 +153,7 @@ function SignUpForm(props) {
                                     },
                                     pattern: {
                                         // input의 정규식 패턴
-                                        value: /^[a-zA-Z][0-9a-zA-Z]{8,16}$/,
+                                        value: /^[a-zA-Z][0-9a-zA-Z]{8,20}$/,
                                         message:
                                             '가능한 문자: 8 ~ 10자 영문, 숫자 조합', // 에러 메세지
                                     },
@@ -162,7 +174,7 @@ function SignUpForm(props) {
                                 {...register('passwordCheck', {
                                     required: {
                                         value: true,
-                                        message: '비밀번호는 필수 입력입니다.',
+                                        message: '비밀번호 확인은 필수입니다.',
                                     },
                                     // validate: (value, data) => {
                                     //     value === data.password ||
@@ -176,9 +188,9 @@ function SignUpForm(props) {
                                     },
                                 })}
                             />
-                            {errors.password && (
+                            {errors.passwordCheck && (
                                 <PTag role="alert">
-                                    {errors?.password?.message}
+                                    {errors?.passwordCheck?.message}
                                 </PTag>
                             )}
                         </div>

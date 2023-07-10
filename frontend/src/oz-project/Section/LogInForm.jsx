@@ -139,25 +139,22 @@ function LogInForm(props) {
                                 {...register('userId', {
                                     required: {
                                         value: true,
-                                        message: '아이디는 필수 입력입니다.',
+                                        message: '아이디를 입력하세요',
                                     },
-                                    minLength: {
-                                        value: 8,
-                                        message:
-                                            '아이디는 8글자 이상이어야 합니다',
-                                    },
-                                    pattern: {
-                                        // input의 정규식 패턴
-                                        value: /^[A-za-z0-9가-힣]{3,10}$/,
-                                        message:
-                                            '가능한 문자: 영문 대소문자, 글자 단위 한글, 숫자', // 에러 메세지
-                                    },
+
+                                    // pattern: {
+                                    //     // input의 정규식 패턴
+                                    //     value: /^[A-za-z0-9가-힣]{6,20}$/,
+                                    //     message:
+                                    //         '가능한 문자: 영문 대소문자, 글자 단위 한글, 숫자', // 에러 메세지
+                                    // },
                                 })}
                             />
-                            {errors.id && (
-                                <PTag role="alert">{errors?.id?.message}</PTag>
-                            )}
                         </div>
+                        {errors.userId && (
+                            <PTag role="alert">{errors?.userId?.message}</PTag>
+                        )}
+
                         <div
                             style={{ display: 'flex', flexDirection: 'center' }}
                         >
@@ -169,7 +166,7 @@ function LogInForm(props) {
                                 {...register('password', {
                                     required: {
                                         value: true,
-                                        message: '비밀번호는 필수 입력입니다.',
+                                        message: '비밀번호를 입력하세요',
                                     },
                                     // minLength: {
                                     //     value: 8,
@@ -184,12 +181,12 @@ function LogInForm(props) {
                                     // },
                                 })}
                             />
-                            {errors.password && (
-                                <PTag role="alert">
-                                    {errors?.password?.message}
-                                </PTag>
-                            )}
                         </div>
+                        {errors.password && (
+                            <PTag role="alert">
+                                {errors?.password?.message}
+                            </PTag>
+                        )}
                     </FormWrapper>
                     <span style={{ display: 'inline-block' }}>
                         <button

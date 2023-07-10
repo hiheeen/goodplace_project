@@ -18,6 +18,9 @@ const Container = styled.div`
 const Wrapper = styled.div`
     box-sizing: border-box;
     padding: 0 120px;
+    @media (max-width: 768px) {
+        padding: 0;
+    }
     margin: 0 auto;
     max-width: 1200px;
     height: 100%;
@@ -72,7 +75,7 @@ const LogOut = styled.button`
     font-weight: 800;
     margin-right: 8px;
 `;
-function Header({ centerDisplay, handleClick }) {
+function Header({ centerDisplay, handleClick, myName }) {
     // const [isLogOut, setIsLogOut] = useState(false);
     const navigate = useNavigate();
     const handleSignUp = () => {
@@ -154,6 +157,9 @@ function Header({ centerDisplay, handleClick }) {
                         </Right>
                     ) : (
                         <Right className="header_right">
+                            <div style={{ fontSize: 12, color: 'white' }}>
+                                맛점!
+                            </div>
                             <LogOut onClick={handleLogOut} className="oz_logIn">
                                 로그아웃
                             </LogOut>

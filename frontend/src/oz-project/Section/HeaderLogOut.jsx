@@ -111,6 +111,9 @@ function HeaderLogOut({ centerDisplay, handleClick }) {
                     </Center>
 
                     <Right className="header_right">
+                        <div style={{ fontSize: 12, color: 'white' }}>
+                            맛점!
+                        </div>
                         <LogOut onClick={handleLogOut} className="oz_logIn">
                             로그아웃
                         </LogOut>
