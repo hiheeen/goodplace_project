@@ -305,7 +305,8 @@ function MainSection(props) {
                                 }
                                 displayModifyDeleteBtn={
                                     (!modifyClick && item.user.id === Id) ||
-                                    isModifyMode !== item.id
+                                    (isModifyMode !== item.id &&
+                                        item.user.id === Id)
                                         ? 'inline-block'
                                         : 'none' //수정버튼 아직 안 눌렀고(!false=true),내 게시물(true) => 보이기//누르면 안보이기
                                 }
