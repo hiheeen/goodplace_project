@@ -50,7 +50,7 @@ function MainSection(props) {
     const [modifyClick, setModifyClick] = useState(false);
     const [modifyDescription, setModifyDescription] = useState('');
     const [likeList, setLikeList] = useState({});
-    const [isModifyMode, setIsModifyMode] = useState(false);
+    const [isModifyMode, setIsModifyMode] = useState();
 
     const likeClick = async (itemId) => {
         // setIsLikeClick(true);
@@ -252,14 +252,16 @@ function MainSection(props) {
     // };
 
     const makeModifyMode = (item) => {
-        for (let i = 0; i < list.length; i++) {
-            if (list[i].id === item) {
-                setIsModifyMode(true);
-                setModifyClick(true);
-            }
-            console.log(list[i].id);
-            console.log(item);
-        }
+        // for (let i = 0; i < list.length; i++) {
+        //     if (list[i].id === item) {
+        //         setIsModifyMode(true);
+        //         setModifyClick(true);
+        //     }
+        //     console.log(list[i].id);
+        //     console.log(item);
+        // }
+        setModifyClick(true);
+        setIsModifyMode(item);
     };
     //isModifyMode , setIsModifyMode
     return (
@@ -296,33 +298,36 @@ function MainSection(props) {
                                 description={item.description}
                                 modifyDescription={
                                     !modifyClick &&
-                                    isModifyMode &&
+                                    isModifyMode === item.id &&
                                     item.user.id === Id
                                         ? ''
                                         : modifyDescription
                                 }
                                 displayModifyDeleteBtn={
-                                    !modifyClick &&
-                                    !isModifyMode &&
-                                    item.user.id === Id
+                                    (!modifyClick && item.user.id === Id) ||
+                                    isModifyMode !== item.id
                                         ? 'inline-block'
                                         : 'none' //수정버튼 아직 안 눌렀고(!false=true),내 게시물(true) => 보이기//누르면 안보이기
                                 }
                                 handleModify={() => makeModifyMode(item.id)}
                                 modifyDisplay={
-                                    modifyClick && item.user.id === Id
+                                    modifyClick &&
+                                    isModifyMode === item.id &&
+                                    item.user.id === Id
                                         ? 'block'
                                         : 'none'
                                 }
                                 originalDisplay={
-                                    modifyClick && item.user.id === Id
+                                    modifyClick &&
+                                    isModifyMode === item.id &&
+                                    item.user.id === Id
                                         ? 'none'
                                         : 'block'
                                 }
                                 modifyOnChange={modifyOnChange}
                                 saveDisplay={
                                     modifyClick &&
-                                    isModifyMode &&
+                                    isModifyMode === item.id &&
                                     item.user.id === Id //item.user.id 는 게시글 작성한 유저, Id는 로그인 유저
                                         ? 'block'
                                         : 'none'
