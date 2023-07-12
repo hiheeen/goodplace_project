@@ -133,6 +133,8 @@ function RegisterSection(props) {
                 },
             }
         );
+        if (e.key === 'enter') {
+        }
         navigate('/', { replace: true });
     }; ///// 작동 되는 부분
 
@@ -143,11 +145,10 @@ function RegisterSection(props) {
             <HeaderLogOut registerDisplay="flex" centerDisplay="none" />
             <Container>
                 <Map
-                    // address={
-                    //     Object.keys(datas).length &&
-                    //     datas?.place.items[0].address
-                    // }
-                    address="서울특별시 서초구 잠원동 14-17 1층 신사골감자탕 신사점"
+                    address={
+                        Object.keys(datas).length &&
+                        datas?.place.items[0].address
+                    }
                 />
                 <Wrapper
                     className="searchData_wrapper"
@@ -309,7 +310,11 @@ function RegisterSection(props) {
                                                 marginTop: '10px',
                                             }}
                                         >
-                                            <button>등록</button>
+                                            <button
+                                            // 등록 버튼 말고 엔터키 눌렀을 때에도 똑같은 효과 나도록
+                                            >
+                                                등록
+                                            </button>
                                         </div>
                                     </div>
                                 )}

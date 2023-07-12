@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Reset } from 'styled-reset';
+
 import './App.css';
 import Header from './oz-project/Section/Header';
 import MainSection from './oz-project/Section/MainSection';
@@ -12,6 +13,7 @@ import SignUpForm from './oz-project/Section/SignUpForm';
 import LogInForm from './oz-project/Section/LogInForm';
 import jwt_decode from 'jwt-decode';
 import axios from 'axios';
+import { useEffect } from 'react';
 const Wrapper = styled.div``;
 
 function App() {
@@ -33,11 +35,12 @@ function App() {
                     }
                 );
 
-                const { access_token } = response.data;
+                const { access_token, new_refresh_token } = response.data;
+                console.log(response.data);
 
                 // 새로운 access token을 localStorage 등에 저장
                 localStorage.setItem('access_token', access_token);
-
+                localStorage.setItem('refresh_token', new_refresh_token);
                 // 발급받은 access token을 이용하여 이후 작업 수행
                 // ...
                 // return;
@@ -48,6 +51,9 @@ function App() {
             }
         }
     };
+    useEffect(() => {
+        refreshToken();
+    });
     return (
         <div>
             <BrowserRouter>

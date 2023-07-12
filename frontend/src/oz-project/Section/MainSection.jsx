@@ -50,43 +50,10 @@ function MainSection(props) {
     const [modifyClick, setModifyClick] = useState(false);
     const [modifyDescription, setModifyDescription] = useState('');
     const [likeList, setLikeList] = useState({});
+    const [isModifyMode, setIsModifyMode] = useState(false);
 
-    // const likeClick = async (itemId) => {
-    //     const token = localStorage.getItem('access_token');
-
-    //     if (token) {
-    //         const response = await axios
-    //             .post(
-    //                 `http://localhost:8000/api/v1/places/like_place/${itemId}/`,
-    //                 {},
-    //                 {
-    //                     headers: {
-    //                         Authorization: `Bearer ${token}`,
-    //                     },
-    //                 }
-    //             )
-    //             .then((response) => console.log('좋아요 누른 데이터 전송 완료'))
-    //             .catch((error) => {
-    //                 // 요청 실패 시 이전에 증가시킨 좋아요 수를 다시 감소시킴
-    //                 // setLikeNum((prevLikeNum) => prevLikeNum - 1);
-    //                 console.error('좋아요 클릭 에러:', error);
-    //             });
-    //     }
-    //     if (isDisLikeClick) {
-    //         alert('이미 "싫어요"를 누르셨어요! 취소하고 다시 와주세요^^');
-    //     }
-    //     if (isLikeClick) {
-    //       setIsLikeClick(false); // 좋아요 취소
-    //       setLikeNum((prevLikeNum) => prevLikeNum - 1); // 좋아요 수 감소
-    //       // 나머지 코드 생략
-    //     } else {
-    //       setIsLikeClick(true);
-    //       setLikeNum((prevLikeNum) => prevLikeNum + 1); // 좋아요 수 증가
-    //       // 나머지 코드 생략
-    //     }
-    //   };
     const likeClick = async (itemId) => {
-        setIsLikeClick(true);
+        // setIsLikeClick(true);
         // list.map((item) => {
         //     setLikeNum(item.like_user.length);
         // });
@@ -104,49 +71,39 @@ function MainSection(props) {
                         },
                     }
                 )
-                .then((response) => console.log('좋아요 누른 데이터 전송 완료'))
+                .then((response) => {
+                    console.log('좋아요 누른 데이터 전송 완료');
+                    setIsLikeClick(!isLikeClick);
+
+                    setList((prevList) => {
+                        //itemId 에 해당하는 걸 찾는다
+                    });
+                })
                 .catch((error) => {
                     // 요청 실패 시 이전에 증가시킨 좋아요 수를 다시 감소시킴
                     // setLikeNum((prevLikeNum) => prevLikeNum - 1);
                     console.error('좋아요 클릭 에러:', error);
                 });
-            window.location.reload();
-        } else {
-            alert('로그인 후 이용해주세요');
-            return;
+            // window.location.reload();
         }
-        if (isDisLikeClick) {
-            alert('이미 "싫어요"를 누르셨어요! 취소하고 다시 와주세요^^');
-        }
-        const likeResponse = await axios
-            .get(`http://localhost:8000/api/v1/places/`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            })
-            .then((response) => {
-                setLikeList(response.data.like_user);
-                console.log('기존 데이터', response.data.like_user);
-            });
-        // const like = useEffect(
-        //    likeList.map(item) => {
-        //         setLikeNum(item.length);
-        //         if (item.includes(Id)) {
-        //             setLikeNum((prev) => prev + 1);
-        //         } else setLikeNum((prev) => prev - 1);
-        //         return likeNum;
-        //     },
-        //     [likeNum]
-        // );
-        // window.location.reload(); /// 새로고침 말고 버튼 부분만 리렌더링 시키고 싶은데 도저히 방법을 못 찾겠다....
-        // 컴포넌트 분리..? 아니면 어떻게ㅠㅠㅠ??
+
+        // const likeResponse = await axios
+        //     .get(`http://localhost:8000/api/v1/places/`, {
+        //         headers: {
+        //             Authorization: `Bearer ${token}`,
+        //         },
+        //     })
+        //     .then((response) => {
+        //         setLikeList(response.data.like_user);
+        //         console.log('기존 데이터', response.data.like_user);
+        //     });
     };
 
     const disLikeClick = async (itemId) => {
         setIsDisLikeClick(true);
         const token = localStorage.getItem('access_token');
 
-        if (!isLikeClick && token) {
+        if (token) {
             const response = await axios
                 .post(
                     `http://localhost:8000/api/v1/places/hate_place/${itemId}/`,
@@ -157,16 +114,14 @@ function MainSection(props) {
                         },
                     }
                 )
-                .then((response) => console.log('싫어요 누른 데이터 전송 완료'))
+                .then((response) => {
+                    console.log('싫어요 누른 데이터 전송 완료');
+                    setIsDisLikeClick(!isDisLikeClick);
+                })
                 .catch((error) => console.log('싫어요 실패'));
-            window.location.reload();
-        } else {
-            alert('로그인 후 이용해주세요');
-            return;
+            // window.location.reload();
         }
-        if (isLikeClick) {
-            alert('이미 "좋아요"를 누르셨어요! 취소하고 다시 와주세요^^');
-        }
+
         // window.location.reload();
     };
 
@@ -206,22 +161,8 @@ function MainSection(props) {
         }
 
         fetchData();
-    }, []); //// 데이터 받아오는 코드 .. 보내는거랑 받아오는거 구별 잘하기
+    }, [isLikeClick, isDisLikeClick]); //// 데이터 받아오는 코드 .. 보내는거랑 받아오는거 구별 잘하기
 
-    // const decodeJwt = (token) => {
-    //     try {
-    //         const decoded = jwt.decode(token);
-    //         return decoded;
-    //     } catch (error) {
-    //         console.error('JWT 디코드 에러:', error.message);
-    //         return null;
-    //     }
-    // };
-
-    // // 사용 예시
-    // const token = localStorage.getItem('access_token');
-    // const decodedToken = decodeJwt(token);
-    // console.log(decodedToken); // 디코드된 JWT 페이로드 출력
     useEffect(() => {
         const token = localStorage.getItem('access_token');
 
@@ -258,10 +199,7 @@ function MainSection(props) {
             setId(userId);
         }
     }, []);
-    const handleModify = () => {
-        setIsModify(true);
-        setModifyClick(true);
-    };
+
     // const handleDelete = () => {
     //     setIsDelete(true);
     // };
@@ -282,11 +220,6 @@ function MainSection(props) {
         setIsModify(false);
         window.location.reload();
     };
-    // const handleDelete = async (itemId) => {
-    //     axios.delete(
-    //         'http://localhost:8000/api/v1/places/delete_place/' + itemId + '/'
-    //     );
-    // };
     const handleDelete = async (itemId) => {
         try {
             const token = localStorage.getItem('access_token');
@@ -299,7 +232,6 @@ function MainSection(props) {
                     },
                 }
             );
-
             // 삭제 요청에 대한 처리
             console.log('삭제 요청 결과:', response);
         } catch (error) {
@@ -309,6 +241,27 @@ function MainSection(props) {
         window.location.reload();
     };
 
+    // const handleModify = (item) => {
+    //     for (const i = 0; i < list.length; i++) {
+    //         if (list[i].id === item) setIsModifyMode(true);
+    //     }
+    // };
+    // const handleModify = () => {
+    //
+    //     setModifyClick(true);
+    // };
+
+    const makeModifyMode = (item) => {
+        for (let i = 0; i < list.length; i++) {
+            if (list[i].id === item) {
+                setIsModifyMode(true);
+                setModifyClick(true);
+            }
+            console.log(list[i].id);
+            console.log(item);
+        }
+    };
+    //isModifyMode , setIsModifyMode
     return (
         <div>
             <Header
@@ -342,21 +295,20 @@ function MainSection(props) {
                                 disLikeClick={() => disLikeClick(item.id)}
                                 description={item.description}
                                 modifyDescription={
-                                    !modifyClick && item.user.id === Id
+                                    !modifyClick &&
+                                    isModifyMode &&
+                                    item.user.id === Id
                                         ? ''
                                         : modifyDescription
                                 }
                                 displayModifyDeleteBtn={
-                                    !modifyClick && item.user.id === Id
+                                    !modifyClick &&
+                                    !isModifyMode &&
+                                    item.user.id === Id
                                         ? 'inline-block'
                                         : 'none' //수정버튼 아직 안 눌렀고(!false=true),내 게시물(true) => 보이기//누르면 안보이기
                                 }
-                                // deleteBtn={
-                                //     item.user.id === Id
-                                //         ? 'inline-block'
-                                //         : 'none'
-                                // }
-                                handleModify={handleModify}
+                                handleModify={() => makeModifyMode(item.id)}
                                 modifyDisplay={
                                     modifyClick && item.user.id === Id
                                         ? 'block'
@@ -369,17 +321,14 @@ function MainSection(props) {
                                 }
                                 modifyOnChange={modifyOnChange}
                                 saveDisplay={
-                                    modifyClick && item.user.id === Id //item.user.id 는 게시글 작성한 유저, Id는 로그인 유저
+                                    modifyClick &&
+                                    isModifyMode &&
+                                    item.user.id === Id //item.user.id 는 게시글 작성한 유저, Id는 로그인 유저
                                         ? 'block'
                                         : 'none'
                                 }
                                 handleSave={() => handleSave(item.id)}
                                 handleDelete={() => handleDelete(item.id)}
-                                // likeColor={
-                                //     isLikeClick && item.like_user.includes(Id)
-                                //         ? 'lightblue'
-                                //         : ''
-                                // }
                             />
                         );
                     })}
