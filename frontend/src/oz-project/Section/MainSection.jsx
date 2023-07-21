@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import PlaceBox from '../component/PlaceBox';
 import Header from './Header';
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useEffect } from 'react';
 import jwt_decode from 'jwt-decode';
 import axios from 'axios';
@@ -74,10 +74,6 @@ function MainSection(props) {
                 .then((response) => {
                     console.log('좋아요 누른 데이터 전송 완료');
                     setIsLikeClick(!isLikeClick);
-
-                    setList((prevList) => {
-                        //itemId 에 해당하는 걸 찾는다
-                    });
                 })
                 .catch((error) => {
                     // 요청 실패 시 이전에 증가시킨 좋아요 수를 다시 감소시킴
@@ -161,7 +157,9 @@ function MainSection(props) {
         }
 
         fetchData();
-    }, [isLikeClick, isDisLikeClick]); //// 데이터 받아오는 코드 .. 보내는거랑 받아오는거 구별 잘하기
+    }, [isLikeClick, isDisLikeClick]);
+    //// 데이터 받아오는 코드 .. 보내는거랑 받아오는거 구별 잘하기
+    //// isLikeClick이랑 isDisLikeClick은 좋아요 싫어요 버튼 누를때마다 바뀌니까 렌더링되게
 
     useEffect(() => {
         const token = localStorage.getItem('access_token');
@@ -206,6 +204,15 @@ function MainSection(props) {
     const modifyOnChange = (e) => {
         setModifyDescription(e.target.value);
     };
+
+    const keyDownOnChange = (e, itemId) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            handleSave(itemId);
+            setModifyDescription('');
+        }
+    };
+
     const handleSave = async (itemId) => {
         const data = {
             description: modifyDescription,
@@ -273,7 +280,7 @@ function MainSection(props) {
             />
             <Container>
                 <Wrapper>
-                    {list.map((item) => {
+                    {list?.map((item) => {
                         // const likeNum = item.like_user.length;
                         return (
                             <PlaceBox
@@ -290,6 +297,7 @@ function MainSection(props) {
                                     'https://map.naver.com/v5/search/' +
                                     item.title
                                 }
+                                key={item.id}
                                 menuImgSrc={item.image}
                                 likeNum={item.like_user.length}
                                 disLikeNum={item.hate_user.length}
@@ -304,11 +312,15 @@ function MainSection(props) {
                                         : modifyDescription
                                 }
                                 displayModifyDeleteBtn={
-                                    (!modifyClick && item.user.id === Id) ||
+                                    (!isModifyMode && item.user.id === Id) ||
                                     (isModifyMode !== item.id &&
                                         item.user.id === Id)
                                         ? 'inline-block'
-                                        : 'none' //수정버튼 아직 안 눌렀고(!false=true),내 게시물(true) => 보이기//누르면 안보이기
+                                        : 'none'
+                                    //수정버튼 안 눌렸을 때에는 !isModifyMode 값이 true, 내가 쓴 게시글 전부 보임
+                                    //버튼 눌리면 || 의 앞이 false, 뒤의 문으로 가서 true, false를 판별하는데
+                                    // 수정버튼 누른 게시글이면서(isModifyMode의 값은 딱 한 개의 place.id, item.id는 각각 다르다)
+                                    // 내가 쓴 게시글 인 것! 즉 내가 쓴 것들 중에 수정버튼 안 누른 애들만 버튼 보이기
                                 }
                                 handleModify={() => makeModifyMode(item.id)}
                                 modifyDisplay={
@@ -326,6 +338,7 @@ function MainSection(props) {
                                         : 'block'
                                 }
                                 modifyOnChange={modifyOnChange}
+                                keyDownOnChange={keyDownOnChange}
                                 saveDisplay={
                                     modifyClick &&
                                     isModifyMode === item.id &&

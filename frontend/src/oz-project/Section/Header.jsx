@@ -157,7 +157,16 @@ function Header({ centerDisplay, handleClick, myName }) {
                         </Right>
                     ) : (
                         <Right className="header_right">
-                            <div style={{ fontSize: 12, color: 'white' }}>
+                            <div
+                                style={{
+                                    fontSize: 12,
+                                    color: 'white',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    marginRight: '5px',
+                                    fontWeight: 700,
+                                }}
+                            >
                                 맛점!
                             </div>
                             <LogOut onClick={handleLogOut} className="oz_logIn">

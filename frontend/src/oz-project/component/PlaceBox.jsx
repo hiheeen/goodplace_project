@@ -1,3 +1,4 @@
+import { useRef } from 'react';
 import styled from 'styled-components';
 const Container = styled.div`
     box-sizing: border-box;
@@ -37,6 +38,7 @@ function PlaceBox({
     modifyDisplay,
     originalDisplay,
     modifyOnChange,
+    keyDownOnChange,
     modifyDescription,
     saveDisplay,
     handleSave,
@@ -188,6 +190,7 @@ function PlaceBox({
                 <input
                     className="modify_description"
                     onChange={modifyOnChange}
+                    onKeyDown={keyDownOnChange}
                     value={modifyDescription}
                     style={{
                         border: '1px solid black',
