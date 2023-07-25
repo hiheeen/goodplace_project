@@ -41,8 +41,8 @@ const Input = styled.input`
     border-radius: 5px;
 `;
 function LogInForm(props) {
-    const [loggedIn, setLoggedIn] = useState(false);
-    const [user, setUser] = useState(null);
+    // const [loggedIn, setLoggedIn] = useState(false);
+    // const [user, setUser] = useState(null);
     const {
         register,
         watch,
@@ -52,32 +52,6 @@ function LogInForm(props) {
     } = useForm();
     const navigate = useNavigate();
 
-    useEffect(() => {
-        const token = localStorage.getItem('access_token');
-
-        if (token) {
-            // 토큰이 존재하면 유효성 검사를 수행
-            const decodedToken = jwt_decode(token);
-
-            // 토큰의 만료 시간 확인
-            const currentTime = Date.now() / 1000; // 현재 시간 (밀리초를 초로 변환)
-            if (decodedToken.exp < currentTime) {
-                // 토큰이 만료되었으면 로그아웃 처리
-                setLoggedIn(false);
-                setUser(null);
-                localStorage.removeItem('access_token');
-            } else {
-                // 토큰이 유효한 경우 로그인 상태로 설정
-                setLoggedIn(true);
-                setUser(decodedToken);
-            }
-        } else {
-            // 토큰이 없으면 로그아웃 상태로 설정
-            setLoggedIn(false);
-            setUser(null);
-        }
-    }, []);
-    // Create the submit method.
     const onSubmit = async () => {
         const userId = watch('userId');
         const password = watch('password');
@@ -85,8 +59,6 @@ function LogInForm(props) {
             userId: userId,
             password: password,
         };
-
-        // Create the POST request
         try {
             const { data } = await axios.post(
                 'http://localhost:8000/api/v1/users/login/',
@@ -94,7 +66,6 @@ function LogInForm(props) {
                 { headers: { 'Content-Type': 'application/json' } },
                 { withCredentials: true }
             );
-            // Initialize the access & refresh token in localstorage.
             localStorage.clear();
             localStorage.setItem('access_token', data.access);
             localStorage.setItem('refresh_token', data.refresh);
@@ -108,16 +79,17 @@ function LogInForm(props) {
             reset();
             return;
         }
+        //
         const token = localStorage.getItem('access_token');
 
-        const decodedToken = jwt_decode(token);
-        console.log(decodedToken);
+        // const decodedToken = jwt_decode(token);
+        // console.log(decodedToken);
 
         // 로그인 처리 로직
         // 로그인이 성공하면 토큰을 저장하고 loggedIn 상태와 user 정보를 업데이트
 
-        setLoggedIn(true);
-        setUser(decodedToken);
+        // setLoggedIn(true);
+        // setUser(decodedToken);
     };
 
     return (

@@ -162,11 +162,11 @@ function MainSection(props) {
     //// isLikeClick이랑 isDisLikeClick은 좋아요 싫어요 버튼 누를때마다 바뀌니까 렌더링되게
 
     useEffect(() => {
-        const token = localStorage.getItem('access_token');
+        const accessToken = localStorage.getItem('access_token');
 
-        if (token) {
+        if (accessToken && !(accessToken === ('undefined' || 'null'))) {
             // 토큰이 존재하면 유효성 검사를 수행
-            const decodedToken = jwt_decode(token);
+            const decodedToken = jwt_decode(accessToken);
 
             // 토큰의 만료 시간 확인
             const currentTime = Date.now() / 1000; // 현재 시간 (밀리초를 초로 변환)
@@ -188,7 +188,7 @@ function MainSection(props) {
     }, []);
     useEffect(() => {
         const accessToken = localStorage.getItem('access_token');
-        if (accessToken) {
+        if (accessToken && !(accessToken === ('undefined' || 'null'))) {
             const decodedToken = jwt_decode(accessToken);
             const userId = decodedToken.user_id;
             setId(userId);
@@ -196,7 +196,7 @@ function MainSection(props) {
             const userId = '';
             setId(userId);
         }
-    }, []);
+    }, []); ///중요한 코드, userId 가지고 작업하는 코드니까 함부로 지우지 마라
 
     // const handleDelete = () => {
     //     setIsDelete(true);
@@ -208,8 +208,8 @@ function MainSection(props) {
     const keyDownOnChange = (e, itemId) => {
         if (e.key === 'Enter') {
             e.preventDefault();
+            setModifyDescription(e.target.value);
             handleSave(itemId);
-            setModifyDescription('');
         }
     };
 
@@ -273,11 +273,11 @@ function MainSection(props) {
     //isModifyMode , setIsModifyMode
     return (
         <div>
-            <Header
+            {/* <Header
                 registerDisplay="none"
                 centerDisplay="flex"
                 handleClick={handleClick}
-            />
+            /> */}
             <Container>
                 <Wrapper>
                     {list?.map((item) => {
@@ -337,8 +337,10 @@ function MainSection(props) {
                                         ? 'none'
                                         : 'block'
                                 }
-                                modifyOnChange={modifyOnChange}
-                                keyDownOnChange={keyDownOnChange}
+                                modifyOnChange={(e) => modifyOnChange(e)}
+                                keyDownOnChange={(e) =>
+                                    keyDownOnChange(e, item.id)
+                                }
                                 saveDisplay={
                                     modifyClick &&
                                     isModifyMode === item.id &&

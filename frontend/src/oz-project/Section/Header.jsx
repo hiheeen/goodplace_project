@@ -75,8 +75,9 @@ const LogOut = styled.button`
     font-weight: 800;
     margin-right: 8px;
 `;
-function Header({ centerDisplay, handleClick, myName }) {
+function Header({ centerDisplay, handleClick, loggedIn }) {
     // const [isLogOut, setIsLogOut] = useState(false);
+
     const navigate = useNavigate();
     const handleSignUp = () => {
         navigate('/signUp', { replace: true });
@@ -84,29 +85,36 @@ function Header({ centerDisplay, handleClick, myName }) {
     const handleLogIn = () => {
         navigate('/logIn', { replace: true });
     };
-    // const refresh_token = localStorage.getItem('refresh_token');
-    // const logOut =await axios.post('http://localhost:8000/api/v1/users/logout/',
-    // refresh_token )
-
-    // }
 
     const handleLogOut = async () => {
-        const token = {
-            refresh_token: localStorage.getItem('refresh_token'),
-        };
-        console.log(token);
-        const logOut = await axios.post(
-            'http://localhost:8000/api/v1/users/logout/',
-            token
-        );
+        const refreshToken = localStorage.getItem('refresh_token');
+        const accessToken = localStorage.getItem('access_token');
 
-        navigate('/', { replace: true });
+        try {
+            const logOut = await axios
+                .post(
+                    'http://localhost:8000/api/v1/users/logout/',
+                    {
+                        refresh_token: refreshToken,
+                    }
+                    // {
+                    //     headers: {
+                    //         Authorization: `Bearer ${accessToken}`,
+                    //     },
+                    // } // header에 들어가는 토큰은 access토큰이다
+                )
+                .then((res) => {
+                    console.log('토큰 무효화 성공');
+                    localStorage.clear();
+                });
+        } catch (error) {
+            console.log('토큰 무효화 실패', error);
+        }
+
+        navigate('/');
         localStorage.clear();
-        console.log('라라', localStorage.getItem('access_token'));
-        // setIsLogOut(true);
-        // setLoggedIn(false);
-        // setUser(null);
-        window.location.reload();
+        // console.log('라라', localStorage.getItem('access_token'));
+        // window.location.reload();
     };
 
     return (
@@ -142,20 +150,7 @@ function Header({ centerDisplay, handleClick, myName }) {
                             </Register>
                         </div>
                     </Center>
-                    {localStorage.getItem('access_token') === null ? (
-                        <Right className="header_right">
-                            <LogIn onClick={handleLogIn} className="oz_logIn">
-                                로그인
-                            </LogIn>
-                            <div style={{ color: 'white' }}>|</div>
-                            <SignUp
-                                onClick={handleSignUp}
-                                className="oz_signUp"
-                            >
-                                회원가입
-                            </SignUp>
-                        </Right>
-                    ) : (
+                    {!(localStorage.getItem('access_token') === null) ? (
                         <Right className="header_right">
                             <div
                                 style={{
@@ -172,6 +167,19 @@ function Header({ centerDisplay, handleClick, myName }) {
                             <LogOut onClick={handleLogOut} className="oz_logIn">
                                 로그아웃
                             </LogOut>
+                        </Right>
+                    ) : (
+                        <Right className="header_right">
+                            <LogIn onClick={handleLogIn} className="oz_logIn">
+                                로그인
+                            </LogIn>
+                            <div style={{ color: 'white' }}>|</div>
+                            <SignUp
+                                onClick={handleSignUp}
+                                className="oz_signUp"
+                            >
+                                회원가입
+                            </SignUp>
                         </Right>
                     )}
                 </Wrapper>
