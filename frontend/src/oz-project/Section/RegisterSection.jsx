@@ -4,13 +4,15 @@ import Header from './Header';
 import Map from '../component/Map';
 // import SearchData from '../component/SearchData';
 import HeaderLogOut from './HeaderLogOut';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { Cookies } from 'react-cookie';
 import CSRFToken from '../etc/CSRFToken';
 import PlaceBoxRegister from '../component/PlaceBoxRegister';
 import { useNavigate } from 'react-router-dom';
 import jwt_decode from 'jwt-decode';
+import { refresh } from '../../refresh';
+import { api } from '../../api';
 
 const Button = styled.div`
     all: unset;
@@ -51,7 +53,7 @@ function RegisterSection(props) {
     const [isLoading, setIsLoading] = useState(true);
     const [displayButton, setDisplayButton] = useState('inline-block');
     const [displayRegisterForm, setDisplayRegisterForm] = useState('none');
-
+    const modifyRef = useRef();
     const handleClick = () => {
         setDisplayButton('none');
         setDisplayRegisterForm('block');
@@ -67,8 +69,9 @@ function RegisterSection(props) {
     };
 
     const fetchData = async () => {
+        refresh();
         if (value.place === '') return;
-
+        const accessToken = localStorage.getItem('access_token');
         const formData = new FormData();
         formData.append('place', value.place);
 
@@ -81,20 +84,21 @@ function RegisterSection(props) {
             return cookies.get(name);
         };
         // const csrftoken = getCookie('csrftoken');
-        const response = await axios({
-            method: 'post',
-            url: 'http://localhost:8000/api/v1/places/search_place/',
-            data: formData,
-            // headers: { authorization: `Bearer ${getCookie('place')}` },
-        })
+        await api
+            .post(
+                'places/search_place/',
+                { place: value.place },
+                {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                }
+            )
             .then((response) => {
-                // console.log('response.data', response.data);
                 setDatas(response.data);
-                console.log(datas?.place.items[0].address);
+                console.log(response.data);
+                // console.log(datas?.place.items[0].address);
                 setIsLoading(false);
-
-                // const accessToken = response.data.token;
-                // setCookie('place', accessToken);
             })
             .catch((error) => {
                 console.log('요청실패');
@@ -102,17 +106,23 @@ function RegisterSection(props) {
             });
     };
     const handleSubmit = (e) => {
+        refresh();
         e.preventDefault();
         fetchData();
     };
 
-    useEffect(() => {
-        fetchData();
-    }, []);
+    // useEffect(() => {
+    //     fetchData();
+    // }, []);
 
     const navigate = useNavigate();
 
     const handleRegister = (e) => {
+        refresh();
+        if (e.target.description.value.length < 1) {
+            modifyRef.current.focus();
+            return;
+        }
         e.preventDefault();
         console.log(e.target);
         const place = {
@@ -124,30 +134,31 @@ function RegisterSection(props) {
         };
         console.log(place);
         const token = localStorage.getItem('access_token');
-        const places = axios.post(
-            'http://localhost:8000/api/v1/places/create_place/',
-            place,
-            {
+        const places = axios
+            .post('http://localhost:8000/api/v1/places/create_place/', place, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
-            }
-        );
+            })
+            .then((res) => console.log(res.data))
+            .catch((err) => console.log('err', err));
         if (e.key === 'enter') {
         }
         navigate('/', { replace: true });
     }; ///// 작동 되는 부분
 
-    const createApi = 'http://localhost:8000/api/v1/places/create_place/';
+    // const createApi = 'http://localhost:8000/api/v1/places/create_place/';
 
     return (
         <div>
-            <HeaderLogOut registerDisplay="flex" centerDisplay="none" />
+            {/* <HeaderLogOut registerDisplay="flex" centerDisplay="none" /> */}
             <Container>
                 <Map
-                    address={
-                        Object.keys(datas).length &&
-                        datas?.place.items[0].address
+                    longitude={
+                        Object.keys(datas).length && datas?.place.items[0].mapx
+                    }
+                    latitude={
+                        Object.keys(datas).length && datas?.place.items[0].mapy
                     }
                 />
                 <Wrapper
@@ -237,8 +248,8 @@ function RegisterSection(props) {
                         </div>
                         <div style={{ display: displayRegisterForm }}>
                             <form
-                                method="post"
-                                action={createApi}
+                                // method="post"
+                                // action={createApi}
                                 onSubmit={handleRegister}
                                 style={{
                                     display: 'flex',
@@ -270,6 +281,7 @@ function RegisterSection(props) {
                                             // placeholder={`${value.place}`}
                                         ></Input>
                                         <Input
+                                            ref={modifyRef}
                                             type="text"
                                             name="description"
                                             value={review.description}

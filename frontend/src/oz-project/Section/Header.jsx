@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import jwt_decode from 'jwt-decode';
+import { api } from '../../api';
 const Container = styled.div`
     position: fixed;
     z-index: 1000;
@@ -75,7 +76,7 @@ const LogOut = styled.button`
     font-weight: 800;
     margin-right: 8px;
 `;
-function Header({ centerDisplay, handleClick, loggedIn }) {
+function Header({ centerDisplay, loggedIn }) {
     // const [isLogOut, setIsLogOut] = useState(false);
 
     const navigate = useNavigate();
@@ -86,22 +87,29 @@ function Header({ centerDisplay, handleClick, loggedIn }) {
         navigate('/logIn', { replace: true });
     };
 
+    const handleClick = () => {
+        localStorage.getItem('access_token') === null
+            ? alert('로그인 후 이용해주세요')
+            : navigate('/create_place'); // true일 경우 뒤로가기 안 됨....이어야 하는데
+        //홈에 있는 header에서 create_place로 이동 후 뒤로가기 한번엔 똑같은 create_place페이지,, 두 번 누르면
+        //전에 남아있는 기록 창으로 간다. 왜???
+    };
     const handleLogOut = async () => {
         const refreshToken = localStorage.getItem('refresh_token');
         const accessToken = localStorage.getItem('access_token');
 
         try {
-            const logOut = await axios
+            const logOut = await api
                 .post(
-                    'http://localhost:8000/api/v1/users/logout/',
+                    'users/logout/',
                     {
                         refresh_token: refreshToken,
-                    }
-                    // {
-                    //     headers: {
-                    //         Authorization: `Bearer ${accessToken}`,
-                    //     },
-                    // } // header에 들어가는 토큰은 access토큰이다
+                    },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${accessToken}`,
+                        },
+                    } // header에 들어가는 토큰은 access토큰이다
                 )
                 .then((res) => {
                     console.log('토큰 무효화 성공');

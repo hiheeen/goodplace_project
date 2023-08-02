@@ -6,7 +6,9 @@ import { useRef, useState } from 'react';
 import { useEffect } from 'react';
 import jwt_decode from 'jwt-decode';
 import axios from 'axios';
-
+import { api } from '../../api';
+// import { api,interceptors } from '../../api';
+import { refresh } from '../../refresh';
 const Container = styled.div`
     box-sizing: border-box;
     // background-color: rgb(250, 240, 228);
@@ -52,18 +54,50 @@ function MainSection(props) {
     const [likeList, setLikeList] = useState({});
     const [isModifyMode, setIsModifyMode] = useState();
 
+    // api.interceptors.response.use(
+    //     (resp) => console.log(),
+    //     async (error) => {
+    //         if (
+    //             error.response.status === 401 ||
+    //             error.response.status === 400
+    //         ) {
+    //             console.log('itititti');
+    //             const refreshToken = localStorage.getItem('refresh_token');
+    //             const response = await api.post(
+    //                 'token/refresh/',
+    //                 { refresh: refreshToken }
+
+    //                 // { withCredentials: true }
+    //             );
+    //             if (response.status === 200) {
+    //                 axios.defaults.headers.common['Authorization'] = `Bearer
+    //        ${response.data['access']}`;
+    //                 localStorage.setItem('access_token', response.data.access);
+    //                 localStorage.setItem(
+    //                     'refresh_token',
+    //                     response.data.refresh
+    //                 );
+    //                 return axios(error.config);
+    //             }
+    //         }
+
+    //         return error;
+    //     }
+    // );
+
     const likeClick = async (itemId) => {
         // setIsLikeClick(true);
         // list.map((item) => {
         //     setLikeNum(item.like_user.length);
         // });
         // setLikeNum(likeNum + 1);
+        refresh();
         const token = localStorage.getItem('access_token');
 
         if (token) {
-            const response = await axios
+            const response = await api
                 .post(
-                    `http://localhost:8000/api/v1/places/like_place/${itemId}/`,
+                    `places/like_place/${itemId}/`,
                     {},
                     {
                         headers: {
@@ -96,13 +130,14 @@ function MainSection(props) {
     };
 
     const disLikeClick = async (itemId) => {
-        setIsDisLikeClick(true);
+        // setIsDisLikeClick(true);
+        refresh();
         const token = localStorage.getItem('access_token');
 
         if (token) {
-            const response = await axios
+            const response = await api
                 .post(
-                    `http://localhost:8000/api/v1/places/hate_place/${itemId}/`,
+                    `places/hate_place/${itemId}/`,
                     {}, // 꼭 빈 객체로 전달할 것.
                     {
                         headers: {
@@ -114,7 +149,7 @@ function MainSection(props) {
                     console.log('싫어요 누른 데이터 전송 완료');
                     setIsDisLikeClick(!isDisLikeClick);
                 })
-                .catch((error) => console.log('싫어요 실패'));
+                .catch((error) => console.error('싫어요 실패', error));
             // window.location.reload();
         }
 
@@ -214,25 +249,24 @@ function MainSection(props) {
     };
 
     const handleSave = async (itemId) => {
+        refresh();
         const data = {
             description: modifyDescription,
         };
         console.log('리뷰', data);
-        const description = axios.put(
-            `http://localhost:8000/api/v1/places/modify_place/${itemId}/`,
-            data
-        );
+        const description = api.put(`places/modify_place/${itemId}/`, data);
 
         setModifyClick(false);
         setIsModify(false);
         window.location.reload();
     };
     const handleDelete = async (itemId) => {
+        refresh();
         try {
             const token = localStorage.getItem('access_token');
 
-            const response = await axios.delete(
-                `http://localhost:8000/api/v1/places/delete_place/${itemId}/`,
+            const response = await api.delete(
+                `places/delete_place/${itemId}/`,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,

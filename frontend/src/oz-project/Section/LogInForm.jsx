@@ -75,6 +75,7 @@ function LogInForm(props) {
             // window.location.href = '/';
             navigate('/', { replace: true });
         } catch (error) {
+            console.log(error);
             alert('아이디 또는 비밀번호가 올바르지 않습니다');
             reset();
             return;
